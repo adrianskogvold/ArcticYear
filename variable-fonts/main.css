@@ -1,0 +1,20 @@
+@font-face {
+    font-family: "decovar";
+    src: url("fonts/DecovarAlpha-VF.ttf");
+}
+
+@keyframes expand { to { font-variation-settings: 'SKLA' 100 } }
+
+.main {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    padding-top: 200px;
+}
+
+#decovar {
+    font-size: 100px;
+    font-family: "decovar";
+    font-variation-settings: "SKLA" 1000;
+    animation: expand 1s infinite alternate linear;
+}
