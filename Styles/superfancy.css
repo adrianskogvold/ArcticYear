@@ -24,7 +24,14 @@ background: linear-gradient(rgb(92, 130, 189), rgb(152, 192, 240))
 
 .cloud {
     position: absolute;
-    opacity: 0.1;
+    opacity: 0.6;
+}
+
+#city {
+    position: absolute;
+    z-index: 15;
+    filter: grayscale(100%);
+    top: 10%;
 }
 
 #water {
@@ -44,10 +51,6 @@ background: linear-gradient(rgb(92, 130, 189), rgb(152, 192, 240))
 
 #sea {
     background-color: blue;
-}
-
-#city {
-    background-color: gainsboro;
 }
 
 #clouds {
