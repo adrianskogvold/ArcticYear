@@ -3,30 +3,56 @@
     src: url("fonts/DecovarAlpha-VF.ttf");
 }
 
-@keyframes expand { 
-    from {
-        font-variation-settings: 'BLDA' 10, 'SKLD' 10, 'WMX2' 10;
+@font-face {
+    font-family: "jabin";
+    src: url("fonts/Jabin-Typeface.ttf");
+}
+
+@keyframes appear { 
+    0% {
+        font-variation-settings: 'BLDA' 1000, 'WMX2' 0;
     }
-    to { 
-        font-variation-settings: 'BLDA' 0, 'SKLD' 300, 'WMX2' 50;
-    } 
+    50% { 
+        font-variation-settings: 'BLDA' 0, 'WMX2' 250;
+    }
+    100% {
+        font-variation-settings: 'BLDA' 0, 'WMX2' 500;
+    }
+}
+
+@keyframes increase-weight {
+    0% {
+        opacity: 0;
+        font-variation-settings: 'wght' 0, 'XXXX' 0;
+    }
+    50% {
+        opacity: 1;
+        font-variation-settings: 'wght' 0, 'XXXX' 0;
+    }
+    100% {
+        font-variation-settings: 'wght' 70, 'XXXX' 100;
+    }
 }
 
 @keyframes changeLetter {
     0% {
         content: "SOMMER";
       }
-      50% {
-        color: white;
-      }
-      100% {
-        content: "HOST";
-      }
-  }
+    50% {
+    color: white;
+    }
+    100% {
+    content: "HOST";
+    }
+}
   
 #decovar::before {
     content: "SOMMER";
     animation: changeLetter 3s linear infinite alternate;
+} 
+
+body {
+    background-color: #000;
 }
 
 .main {
@@ -34,12 +60,16 @@
     align-items: center;
     display: flex;
     padding-top: 200px;
-    background-color: #FFF;
     transition: filter 2s ease-in-out;
 }
 
-div:hover {
-    filter: invert(100%);
+#intro {
+    color: #FFF;
+    font-size: 4em;
+    font-family: "jabin";
+    animation: increase-weight 10s ease-in-out;
+    text-align: center;
+    font-variation-settings: 'wght' 70, 'XXXX' 100;
 }
 
 #decovar {
@@ -60,4 +90,9 @@ div:hover {
     left: 0;
     width: 100%;
     height: 100%;
+}
+
+#audio-control {
+    position: absolute;
+    top: 80%;
 }
