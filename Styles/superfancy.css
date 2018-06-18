@@ -34,6 +34,7 @@ background: linear-gradient(rgb(92, 130, 189), rgb(152, 192, 240))
     position: absolute;
 }
 
+
 #mountain {
     background-color: grey;
 }
@@ -52,4 +53,9 @@ background: linear-gradient(rgb(92, 130, 189), rgb(152, 192, 240))
 
 #clouds {
     background-color: turquoise;
+}
+
+.snowflake{
+  position: absolute;
+  color: white;
 }
