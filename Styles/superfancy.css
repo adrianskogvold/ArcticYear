@@ -31,7 +31,11 @@ background: linear-gradient(rgb(92, 130, 189), rgb(152, 192, 240))
     position: absolute;
     z-index: 15;
     filter: grayscale(100%);
-    top: 10%;
+    bottom: 20%;
+}
+
+#city img {
+    max-width: 100%;
 }
 
 #water {
