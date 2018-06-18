@@ -1,0 +1,1 @@
+window.alert("you have been hacked");
