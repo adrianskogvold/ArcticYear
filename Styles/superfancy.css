@@ -15,7 +15,7 @@ body {
     height: 100%;
     left: 0px;
     top: 0px;
-    background: linear-gradient(rgb(0, 0, 30), rgb(18, 23, 29))
+    background: linear-gradient(#011642, #0E58BC);
 }
 
 tempdump {
@@ -24,13 +24,14 @@ background: linear-gradient(rgb(92, 130, 189), rgb(152, 192, 240))
 
 .cloud {
     position: absolute;
-    opacity: 0.6;
+    opacity: 0.5;
+    filter: sepia(100%) hue-rotate(180deg) brightness(75%) saturate(300%);
 }
 
 #city {
     position: absolute;
     z-index: 15;
-    filter: grayscale(100%);
+    filter: sepia(100%) hue-rotate(180deg) brightness(75%) saturate(300%);
     bottom: 20%;
 }
 
@@ -65,4 +66,5 @@ background: linear-gradient(rgb(92, 130, 189), rgb(152, 192, 240))
 .snowflake{
   position: absolute;
   color: white;
+  filter: blur(1px);
 }

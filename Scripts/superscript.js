@@ -103,7 +103,7 @@ var WaterControl = {
         //ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         let lightCount = 100;
         let pointSizes = [0.5, 3, 2, 4, 1, 3.5, 2];
-        let pointColors = ["rgb(255, 255, 255)", "rgb(255, 255, 0)", "rgb(127, 127, 255)", "rgb(255, 255, 128)", "rgb(255, 192, 192)"];
+        let pointColors = ["rgb(255, 255, 255)", "rgb(255, 255, 0)", "rgb(127, 127, 255)", "rgb(255, 255, 128)", "rgb(255, 192, 192)", "rgb(213, 171, 196)", "rgb(239, 216, 116)"];
         let pointDistances = [1, 3, 2, 4, 5, 3];
         
         for(let i=0; i<lightCount; i++) {
