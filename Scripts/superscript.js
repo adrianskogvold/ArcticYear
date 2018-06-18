@@ -1,6 +1,8 @@
 //window.alert("you have been hacked");
 
 
+var PixelsBeforeReflection = 100;
+
 var derp = 0;
 var SkyControl = {
     clouds: [],
@@ -67,27 +69,57 @@ var WaterControl = {
         //this.draw();
     },
 
+    fakeReflection: function(ctx, x, y, width, color) {
+        let reclectionLength = 100;
+        var grad = ctx.createLinearGradient(0, y, 0, y+reclectionLength);
+        color = color.replace(/rgb/i, "rgba").replace(")", ", ");
+        grad.addColorStop(0, color + "0.9)");
+        grad.addColorStop(0.5, color + "0.25)");
+        grad.addColorStop(1, color + "0)");
+        //grad.addColorStop(0.75, "rgba(255, 255, 255, 0.05)");
+        
+        grad.addColorStop(1, "rgba(255, 255, 255, 0)");
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(x, Math.max(PixelsBeforeReflection, y) + width / 2, width / 2, 0, Math.PI * 2);
+        ctx.rect(x - width/2, Math.max(PixelsBeforeReflection,y) + width / 2, width, reclectionLength);
+        ctx.closePath();
+        ctx.fill();
+    },
+
     draw: function() {
         var ctx = this.canvas.getContext("2d");
-        ctx.drawImage(this.canvas,  0.1*Math.sin(++derp/3), 1.5);
-        ctx.fillStyle = "rgba(0, 0, 0, 0.04)";
-        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        let lightCount =100;
-        ctx.clearRect(0, 0, this.canvas.width, 50);
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        ctx.globalAlpha = 0.03;
+        for(let i=0; i < SkyControl.clouds.length; i++) {
+            let cloud = SkyControl.clouds[i];
+            ctx.drawImage(cloud.image, cloud.X * this.canvas.width, PixelsBeforeReflection + (1 - cloud.Y) * this.canvas.height, cloud.size * this.canvas.width, -cloud.size * this.canvas.width * cloud.ratio * 0.6);
+        }
+        ctx.clearRect(0, 0, this.canvas.width, PixelsBeforeReflection);
+
+        ctx.globalAlpha = 1;
+        //ctx.drawImage(this.canvas,  0.1*Math.sin(++derp/3), 1.5);
+        //ctx.fillStyle = "rgba(0, 0, 0, 0.04)";
+        //ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        let lightCount = 100;
         let pointSizes = [0.5, 3, 2, 4, 1, 3.5, 2];
         let pointColors = ["rgb(255, 255, 255)", "rgb(255, 255, 0)", "rgb(127, 127, 255)", "rgb(255, 255, 128)", "rgb(255, 192, 192)"];
         let pointDistances = [1, 3, 2, 4, 5, 3];
         
         for(let i=0; i<lightCount; i++) {
+            let x = i * this.canvas.width / lightCount + 50 * Math.sin((++derp)/20000 + i * 3);
+            let pointSize = pointSizes[(i*257) % pointSizes.length];
+            let pointDist = pointDistances[(i * 11) % pointDistances.length] + Math.abs(20 * Math.sin(derp/10000 + i*2));
+            this.fakeReflection(ctx, x, PixelsBeforeReflection - pointDist, pointSize * 2, pointColors[(i*17) % pointColors.length]);
             ctx.beginPath();
             ctx.fillStyle = pointColors[(i*17) % pointColors.length];
-            let pointSize = pointSizes[(i*257) % pointSizes.length];
-            let pointDist = pointDistances[(i * 11) % pointDistances.length];// + Math.abs(20 * Math.sin(derp/100 + i*2));
-            ctx.arc(i * this.canvas.width / lightCount, 50 + pointSize/2, pointSize, 0, Math.PI * 2);
-            ctx.arc(i * this.canvas.width / lightCount, 50 - pointDist, pointSizes[(i*257) % pointSizes.length], 0, Math.PI * 2);
+            //ctx.arc(i * this.canvas.width / lightCount, 50 + pointSize/2, pointSize, 0, Math.PI * 2);
+            ctx.arc(x, PixelsBeforeReflection - pointDist, pointSizes[(i*257) % pointSizes.length], 0, Math.PI * 2);
             ctx.fill();
             ctx.closePath();
         }
+        ctx.fillStyle = "rgba(0, 0, 30, 0.25)";
+        ctx.fillRect(0, PixelsBeforeReflection, this.canvas.width, this.canvas.height - PixelsBeforeReflection);
     }
 }
 function animateProc() {
