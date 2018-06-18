@@ -11,3 +11,7 @@ Yea we dont know what we are doing either
 - [] Add in sounds for winter (maybe binaural?)
 - [] Add in a way to move between seasons
 - [] Change snow to CSS to use hardware? (http://pajasevi.github.io/CSSnowflakes/)
+
+## Idea Log
+- What if we made it informative about Tromso? So, this is Tromsdalstinden, this is how high it is, here is how much the record snowfall it got? Then we could use red outlines to indicate the area.
+- Should we constrain the aspect ratio so it looks semi-okay on most screens?
