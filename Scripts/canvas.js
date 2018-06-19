@@ -258,11 +258,55 @@ var SnowLayer2 = {
   setDayCycle: function(value) {
     this.alpha = value;
   }
-
 };
+
+var WaterLayer = {
+  initialize: function(canvasLayer) {
+    this.waterCanvas = document.createElement("canvas");
+    this.city = canvasLayer.loadImage("./Images/tromsocolor.png");
+  },
+  fakeReflection: function(ctx, x, y, width, color) {
+    let reclectionLength = 100;
+    var grad = ctx.createLinearGradient(0, y, 0, y+reclectionLength);
+    color = color.replace(/rgb/i, "rgba").replace(")", ", ");
+    grad.addColorStop(0, color + "1)");
+    grad.addColorStop(0.5, color + "0.25)");
+    grad.addColorStop(1, color + "0)");
+    //grad.addColorStop(0.75, "rgba(255, 255, 255, 0.05)");
+    
+    grad.addColorStop(1, "rgba(255, 255, 255, 0)");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(x, Math.max(0, y) + width / 2, width / 2, 0, Math.PI * 2);
+    ctx.rect(x - width/2, Math.max(0,y) + width / 2, width, reclectionLength);
+    ctx.closePath();
+    ctx.fill();
+},
+  paintWater: function(ctx, width, height) {
+    ctx.globalAlpha = 0.25;
+    ctx.scale(1, -0.5);
+    ctx.drawImage(this.city, 0, -width * this.city.ratio, width, width * this.city.ratio);
+    ctx.scale(1, -1/0.5);
+    ctx.globalAlpha = 1;
+    for(let i=0; i < 50; i++) {
+      this.fakeReflection(ctx, i * width / 50 + 50 * Math.sin(i/ 2 + animTicks/50), 0, 10, "rgb(255, 255, 255)");
+    }  
+  },
+  paint: function(ctx, width, height) {
+    this.waterCanvas.width = width;
+    this.waterCanvas.height = height * (1 - WaterMark);
+    this.paintWater(this.waterCanvas.getContext("2d"), this.waterCanvas.width, this.waterCanvas.height);
+    let steps = 150;
+    for(let i=0; i < steps; i++) {
+      let h = height * (1 - WaterMark) / steps;
+      ctx.drawImage(this.waterCanvas, 0, i * h, width, h, Math.sin(i*2 + animTicks / 10) * (6*i/steps) + (15 * (i*i)/(steps*steps)) * Math.sin(i/10 + animTicks / 30), height * WaterMark + i * h, width, h);
+    }
+  }
+}
 
 CanvasLayer.addLayer(CloudLayer);
 CanvasLayer.addLayer(SnowLayer);
+CanvasLayer.addLayer(WaterLayer);
 CanvasLayer.addLayer(CityLayer);
 CanvasLayer.addLayer(SnowLayer2);
 
