@@ -104,8 +104,7 @@ var CanvasLayer = {
   }
 };
 
-var CloudLayer = {
-  clouds: [],
+var SkyLayer = {
   dayColors: {
     top: new Color(92, 130, 189),
     bottom: new Color(152, 192, 240)
@@ -115,6 +114,29 @@ var CloudLayer = {
     top: new Color(01, 22, 102),
     bottom: new Color(14, 124, 224)
   },
+  initialize: function(canvasLayer) {
+    this.topColor = this.dayColors.top;
+    this.bottomColor = this.dayColors.bottom;
+    return this;
+  },
+  paint: function(ctx, width, height) {
+    var grad = ctx.createLinearGradient(0, 0, 0, height * WaterMark);
+    grad.addColorStop(0, this.topColor.toString());
+    grad.addColorStop(1, this.bottomColor.toString());
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, width, height * WaterMark);
+  },
+  setDayCycle: function(amount) {
+    this.topColor = this.dayColors.top.blend(this.nightColors.top, amount);
+    this.bottomColor = this.dayColors.bottom.blend(
+      this.nightColors.bottom,
+      amount
+    );
+  }
+};
+
+var CloudLayer = {
+  clouds: [],
   cloudAlpha: 1,
   initialize: function(canvasLayer) {
     this.cloud1 = canvasLayer.loadImage("./Images/cloud1.png");
@@ -127,16 +149,9 @@ var CloudLayer = {
         size: 0.25 + Math.random() * 0.1
       });
     }
-    this.topColor = this.dayColors.top;
-    this.bottomColor = this.dayColors.bottom;
     return this;
   },
   paint: function(ctx, width, height) {
-    var grad = ctx.createLinearGradient(0, 0, 0, height * WaterMark);
-    grad.addColorStop(0, this.topColor.toString());
-    grad.addColorStop(1, this.bottomColor.toString());
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, width, height * WaterMark);
     ctx.globalAlpha = this.cloudAlpha;
     for (let i = 0; i < this.clouds.length; i++) {
       let c = this.clouds[i];
@@ -149,12 +164,7 @@ var CloudLayer = {
     ctx.globalAlpha = 1;
   },
   setDayCycle: function(amount) {
-    this.topColor = this.dayColors.top.blend(this.nightColors.top, amount);
-    this.bottomColor = this.dayColors.bottom.blend(
-      this.nightColors.bottom,
-      amount
-    );
-    this.cloudAlpha = 1 - amount * 0.9;
+    this.cloudAlpha = 1 - amount * 1;
   }
 };
 
@@ -302,14 +312,121 @@ var WaterLayer = {
       ctx.drawImage(this.waterCanvas, 0, i * h, width, h, Math.sin(i*2 + animTicks / 10) * (6*i/steps) + (15 * (i*i)/(steps*steps)) * Math.sin(i/10 + animTicks / 30), height * WaterMark + i * h, width, h);
     }
   }
+};
+
+var NorthernLights = {
+  initialize: function(canvasLayer) {
+    this.canvas = document.createElement("canvas");
+    this.canvas2 = document.createElement("canvas");
+    this.points = [
+      {x: -0.1, y:0.25},
+      {x: 0.4, y:0.1},
+      //{x: 0.1, y:0.1},
+      {x: 0.6, y: 0.4},
+      {x: 0.5, y: 0.7},
+      {x: 0.9, y: 0.8}
+    ];
+    this.globalAlpha = 0;
+  },
+  paintLight: function(ctx, width, height) {
+    let points = this.points;
+    ctx.globalAlpha = 0.5;
+    ctx.lineWidth = 14;
+    ctx.clearRect(0, 0, width, height);
+    ctx.strokeStyle = "rgba(255, 255, 0, 0.15)";
+    ctx.save();
+    ctx.translate(-20, -10);
+    
+    ctx.beginPath();
+    ctx.moveTo(points[0].x * width, points[0].y * height);
+    for (i = 1; i < points.length - 2; i ++)
+    {
+      var xc = width * (points[i].x + points[i + 1].x) / 2;
+       var yc = height * (points[i].y + points[i + 1].y) / 2;
+       ctx.quadraticCurveTo(points[i].x * width, points[i].y * height, xc, yc);
+    }
+    // curve through the last two points
+    ctx.quadraticCurveTo(width * points[i].x, height * points[i].y, width * points[i+1].x, height * points[i+1].y);
+    //ctx.closePath();
+    ctx.stroke();
+
+    ctx.translate(40, 20);
+    ctx.strokeStyle = "rgba(255, 128, 255, 0.15)";
+    
+    ctx.beginPath();
+    ctx.moveTo(points[0].x * width, points[0].y * height);
+    for (i = 1; i < points.length - 2; i ++)
+    {
+      var xc = width * (points[i].x + points[i + 1].x) / 2;
+       var yc = height * (points[i].y + points[i + 1].y) / 2;
+       ctx.quadraticCurveTo(points[i].x * width, points[i].y * height, xc, yc);
+    }
+    // curve through the last two points
+    ctx.quadraticCurveTo(width * points[i].x, height * points[i].y, width * points[i+1].x, height * points[i+1].y);
+    //ctx.closePath();
+    ctx.stroke();
+
+    ctx.restore();
+
+    ctx.strokeStyle = "rgba(0, 255, 0, 0.6)";
+
+    ctx.beginPath();
+    ctx.moveTo(points[0].x * width, points[0].y * height);
+    for (i = 1; i < points.length - 2; i ++)
+    {
+       var xc = width * (points[i].x + points[i + 1].x) / 2;
+       var yc = height * (points[i].y + points[i + 1].y) / 2;
+       ctx.quadraticCurveTo(points[i].x * width, points[i].y * height, xc, yc);
+    }
+    i = points.length - 2;
+    // curve through the last two points
+    ctx.quadraticCurveTo(width * points[i].x, height * points[i].y, width * points[i+1].x, height * points[i+1].y);
+    //ctx.closePath();
+    ctx.stroke();
+    //for(i = 1; i < points.length - 2; i++) {
+    //  ctx.clearRect(points[i].x * width, 0, 10, height);
+    //}
+    
+  },
+  paintFx: function(ctx, width, height) {
+    ctx.clearRect(0, 0, width, height);
+    ctx.globalAlpha = 0.5;
+    ctx.drawImage(this.canvas, 0, 0);
+    ctx.globalAlpha = 0.45 + 0.1 * Math.sin(Math.sin(animTicks/1000)+animTicks/100);
+    for(let i=7; i >= 0; i--) {
+    ctx.drawImage(this.canvas2, 3*Math.sin(i*9 + animTicks/1000), -3 - i*1.55);
+    }
+  },
+  paint: function(ctx, width, height) {
+    if(this.canvas.width != width) {
+    this.canvas.width = width;
+    this.canvas.height = height * 0.5;
+    this.canvas2.width = width;
+    this.canvas2.height = height * 0.5;
+    }
+    for(let i=0; i < this.points.length-1; i++) {
+      this.points[i].x += Math.sin(animTicks/30 + i*82) * 0.0001;
+      this.points[i].y = 0.5 + 0.35 * Math.sin(animTicks / 300 + i*4);
+    }
+    this.paintLight(this.canvas.getContext("2d"), this.canvas.width, this.canvas.height);
+    this.paintFx(this.canvas2.getContext("2d"), this.canvas2.width, this.canvas2.height);
+    ctx.globalAlpha = this.alpha * this.alpha * 0.6;
+    ctx.drawImage(this.canvas2, 0, 0);
+  },
+  setDayCycle: function(value) {
+    this.alpha = value;
+  }
 }
 
+CanvasLayer.addLayer(SkyLayer);
+CanvasLayer.addLayer(NorthernLights);
 CanvasLayer.addLayer(CloudLayer);
 CanvasLayer.addLayer(SnowLayer);
 CanvasLayer.addLayer(WaterLayer);
 CanvasLayer.addLayer(CityLayer);
 CanvasLayer.addLayer(SnowLayer2);
 
+CanvasLayer.setDayCycle(1);
 var animTicks = 0;
 function animateProc() {
   CanvasLayer.paint();
