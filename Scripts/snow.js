@@ -1,26 +1,42 @@
+const flakes = [ "❄", "❅", "❆" ];
+
 function Snowflake(){
     const opacity = Math.random();
     const size = Math.ceil((Math.random() * 35) + 10);
-    const startpos = Math.ceil(Math.random() * 2000);
+    const startpos = Math.ceil(Math.random() * 1900);
     const snowflake = document.createElement("em");
 
     const zindex = Math.ceil(Math.random() * 1);
-    snowflake.innerHTML = "*";
+    snowflake.innerHTML = flakes[Math.floor(Math.random() * 3)];
     let top = 0;
     snowflake.setAttribute("class", "snowflake");
-    snowflake.setAttribute("style", "font-size:" + size + "px;left:" + startpos + "px;opacity:" + opacity + ";top:0px;z-index:" + zindex );
-    document.getElementById("snow").appendChild(snowflake);
-
-    const interval = setInterval(function() {
-        top += 6;
-        snowflake.style.top = top + "px";
-    }, 10)
-    setTimeout(function() {
-        snowflake.parentNode.removeChild(snowflake);
-        clearInterval(interval)
-    }, 10000)
+    snowflake.setAttribute("style", "font-size:" + size + "px;left:" + startpos + "px;opacity:" + opacity + ";z-index:" + zindex );
+    document.getElementById("snowflakes").appendChild(snowflake);
 }
 
-const snow = setInterval(function () {
+const duration = 10000; // 10s
+const numberOfSnowflakes = 30;
+const timeBetweenSnowflakes =  duration / numberOfSnowflakes;
+
+let snow = setInterval(function () {
    Snowflake();
-}, 400);
+}, timeBetweenSnowflakes);
+
+setTimeout(function() {
+    clearInterval(snow);
+}, duration);
+
+function clearAllSnow() {
+    let snowflakes = document.getElementsByClassName("snowflake");
+    [...snowflakes].forEach(flake => flake.remove());
+}
+
+function addSnow() {
+    snow = setInterval(function () {
+        Snowflake();
+     }, timeBetweenSnowflakes);
+
+     setTimeout(function() {
+        clearInterval(snow);
+    }, duration);
+}
