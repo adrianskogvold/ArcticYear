@@ -160,8 +160,8 @@ var CloudLayer = {
 
 var CityLayer = {
   initialize: function(canvasLayer) {
-    this.city = canvasLayer.loadImage("./Images/City.png");
-    this.nightCity = canvasLayer.loadImageFiltered("./Images/City.png", "sepia(100%) hue-rotate(180deg) brightness(75%) saturate(300%)");
+    this.city = canvasLayer.loadImage("./Images/CityWithRoadCutout.png");
+    this.nightCity = canvasLayer.loadImageFiltered("./Images/CityWithRoadCutout.png", "sepia(100%) hue-rotate(180deg) brightness(75%) saturate(300%)");
     this.tromsdalstin = canvasLayer.loadImage("./Images/Tromsdalstin.png");
     this.floya = canvasLayer.loadImage("./Images/Floya.png");
     this.nordFjellet = canvasLayer.loadImage("./Images/NordFjellet.png");
@@ -172,12 +172,13 @@ var CityLayer = {
   paint: function(ctx, width, height) {
     let h = width * this.city.ratio;
     //  ctx.filter = ;
-    ctx.drawImage(this.tromsdalstin, 0, height - h, width, h);
-    ctx.drawImage(this.nordFjellet, 0, height - h, width, h);
-    ctx.drawImage(this.floya, 0, height - h, width, h);
-    ctx.drawImage(this.city, 0, height - h, width, h);
+    const t = Math.sin(animTicks/150);
+    ctx.drawImage(this.tromsdalstin, t * 5, height - h, width, height);
+    ctx.drawImage(this.nordFjellet, t * 10, height - h, width, height);
+    ctx.drawImage(this.floya, t * 10, height - h, width, height);
+    ctx.drawImage(this.city, t * 15, height - h, width, height);
     ctx.globalAlpha = this.nightAlpha;
-    ctx.drawImage(this.nightCity, 0, height - h, width, h);
+    // ctx.drawImage(this.nightCity, 0, height - h, width, h);
     ctx.globalAlpha = 1;
   },  
   setDayCycle: function(value) {
