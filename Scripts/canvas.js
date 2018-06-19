@@ -1,4 +1,7 @@
 
+const SUMMER = 0;
+const WINTER = 1;
+
 /* holds rgb(a) values which can be converted into a style-compatible string.
    additionally it allows blending with another color (returns a new Color instance) */
 function Color(r, g, b, a) {
@@ -47,7 +50,6 @@ var CanvasLayer = {
     let img = new Image();
     let result = document.createElement("canvas");
     result.style.display = "none";
-    //document.body.appendChild(result);
     img.src = url;
     result.img = img;
     result.applyFilter = function(filter) {
@@ -183,10 +185,11 @@ var CityLayer = {
     let h = width * this.city.ratio;
     //  ctx.filter = ;
     const t = Math.sin(animTicks/100);
-    ctx.drawImage(this.tromsdalstin, t * 15, height - h, width, height);
-    ctx.drawImage(this.nordFjellet, t * 20, height - h, width, height);
-    ctx.drawImage(this.floya, t * 25, height - h, width, height);
-    ctx.drawImage(this.city, t * 35, height - h, width, height);
+    const yPosition = height * WaterMark - h;
+    ctx.drawImage(this.tromsdalstin, t * 15, yPosition, width, h);
+    ctx.drawImage(this.nordFjellet, t * 20, yPosition, width, h);
+    ctx.drawImage(this.floya, t * 25, yPosition, width, h);
+    ctx.drawImage(this.city, t * 35, yPosition, width, h);
     ctx.globalAlpha = this.nightAlpha;
     // ctx.drawImage(this.nightCity, 0, height - h, width, h);
     ctx.globalAlpha = 1;
