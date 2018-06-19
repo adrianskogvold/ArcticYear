@@ -172,11 +172,11 @@ var CityLayer = {
   paint: function(ctx, width, height) {
     let h = width * this.city.ratio;
     //  ctx.filter = ;
-    const t = Math.sin(animTicks/150);
-    ctx.drawImage(this.tromsdalstin, t * 5, height - h, width, height);
-    ctx.drawImage(this.nordFjellet, t * 10, height - h, width, height);
-    ctx.drawImage(this.floya, t * 10, height - h, width, height);
-    ctx.drawImage(this.city, t * 15, height - h, width, height);
+    const t = Math.sin(animTicks/100);
+    ctx.drawImage(this.tromsdalstin, t * 15, height - h, width, height);
+    ctx.drawImage(this.nordFjellet, t * 20, height - h, width, height);
+    ctx.drawImage(this.floya, t * 25, height - h, width, height);
+    ctx.drawImage(this.city, t * 35, height - h, width, height);
     ctx.globalAlpha = this.nightAlpha;
     // ctx.drawImage(this.nightCity, 0, height - h, width, h);
     ctx.globalAlpha = 1;
@@ -203,8 +203,8 @@ var SnowLayer = {
   paint: function(ctx, width, height) {
     if (this.alpha == 0) return;
     ctx.fillStyle = "#fff";
-    ctx.font = "16px serif";
-    const flakes = ["❄", "❅", "❆"];
+    ctx.font = "16px jabin";
+    const flakes = ['•'];
     ctx.globalAlpha = this.alpha;
     for (let i = 0; i < this.snow.length; i++) {
       let f = this.snow[i];
@@ -219,7 +219,7 @@ var SnowLayer = {
         f.speedX = 0;
         f.speedY = 0.001;
       }
-      ctx.fillText("#", f.x * width, f.y * height);
+      ctx.fillText(".", f.x * width, f.y * height);
     }
     ctx.globalAlpha = 1;
   },
@@ -245,8 +245,8 @@ var SnowLayer2 = {
   paint: function(ctx, width, height) {
     if (this.alpha == 0) return;
     ctx.fillStyle = "#fff";
-    ctx.font = "24px serif";
-    const flakes = ["❄", "❅", "❆"];
+    ctx.font = "24px jabin";
+    const flakes = ['•'];
     ctx.globalAlpha = this.alpha;
     for (let i = 0; i < this.snow.length; i++) {
       let f = this.snow[i];
