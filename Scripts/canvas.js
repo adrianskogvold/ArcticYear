@@ -177,14 +177,12 @@ var CityLayer = {
     this.tromsdalstin = canvasLayer.loadImage("./Images/Tromsdalstin.png");
     this.floya = canvasLayer.loadImage("./Images/Floya.png");
     this.nordFjellet = canvasLayer.loadImage("./Images/NordFjellet.png");
-
-    // this.nightCity = canvasLayer.loadImageFiltered("./Images/tromsocolor.png", "sepia(100%) hue-rotate(180deg) brightness(75%) saturate(300%)");
-    // this.city = canvasLayer.loadImage("./Images/tromsocolor.png");
   },
   paint: function(ctx, width, height) {
     let h = width * this.city.ratio;
     //  ctx.filter = ;
-    const t = Math.sin(animTicks/100);
+    // const t = Math.sin(animTicks/100); // For parallaxing
+    const t = 0;
     const yPosition = height * WaterMark - h;
     const drawnWidth = width * 1.05;
     const deltaWidth = (drawnWidth - width)/2;
@@ -323,7 +321,6 @@ var WaterLayer = {
     this.waterCanvas.height = height * (1 - WaterMark);
     this.paintWater(this.waterCanvas.getContext("2d"), this.waterCanvas.width, this.waterCanvas.height);
 
-    // Reflections from city lights
     let steps = 150;
     for(let i=0; i < steps; i++) {
       let h = height * (1 - WaterMark) / steps;
