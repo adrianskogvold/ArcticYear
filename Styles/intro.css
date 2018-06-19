@@ -1,0 +1,127 @@
+@font-face {
+    font-family: "league";
+    src: url("../fonts/LeagueMonoVariable.ttf");
+}
+
+@font-face {
+    font-family: "jabin";
+    src: url("../fonts/Jabin-Typeface.ttf");
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes appear { 
+    0% {
+        font-variation-settings: 'BLDA' 1000, 'WMX2' 0;
+    }
+    50% { 
+        font-variation-settings: 'BLDA' 0, 'WMX2' 250;
+    }
+    100% {
+        font-variation-settings: 'BLDA' 0, 'WMX2' 500;
+    }
+}
+
+@keyframes increase-weight {
+    0% {
+        opacity: 0;
+        font-variation-settings: 'wght' 0, 'XXXX' 0;
+    }
+    50% {
+        opacity: 1;
+        font-variation-settings: 'wght' 0, 'XXXX' 0;
+        text-shadow: none;
+    }
+    100% {
+        font-variation-settings: 'wght' 70, 'XXXX' 100;
+        text-shadow: 2px 2px 2px #ff0000;
+    }
+}
+
+@keyframes changeLetter {
+    0% {
+        content: "SOMMER";
+      }
+    50% {
+    color: white;
+    }
+    100% {
+    content: "HOST";
+    }
+}
+  
+#decovar::before {
+    content: "SOMMER";
+    animation: changeLetter 3s linear infinite alternate;
+} 
+
+body {
+    background-color: #000;
+}
+
+#intro-container {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+#intro {
+    color: #FFF;
+    font-size: 4em;
+    font-family: "jabin";
+    animation: increase-weight 8s ease-in-out;
+    text-align: center;
+    font-variation-settings: 'wght' 70, 'XXXX' 100;
+    text-shadow: 2px 2px 2px #ff0000;
+}
+
+#intro-description {
+    padding-top: 40px;
+    font-family: "league";
+    color: #FFF;
+    font-variation-settings: 'wght' 100;
+    width: 400px;
+    color: #EEE;
+    font-size: 0.8em;
+    text-align: center;
+    animation: fade-in 8s ease-in;
+}
+
+#entry button {
+    background: none;
+    font-family: "jabin";
+    font-size: 30px;
+    font-variation-settings: 'wght' 20, 'XXXX' 0;
+    color: #FFF;
+    border: 1px solid #ff0000;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 40px;
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+    outline: 0;
+    animation: fade-in 8s ease-in;
+}
+
+#entry button:hover {
+    border: 1px solid #FFF;
+}
+
+#audio-control {
+    position: absolute;
+    top: 80%;
+}

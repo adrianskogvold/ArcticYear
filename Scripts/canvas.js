@@ -79,7 +79,7 @@ var CanvasLayer = {
       ctx.fillRect(
         0,
         height / 2 - 10,
-        this.imagesLoaded * width / max(1, this.images.length),
+        this.imagesLoaded * width / Math.max(1, this.images.length),
         height / 2 + 20
       );
       return;
@@ -428,19 +428,38 @@ var NorthernLights = {
   }
 }
 
-CanvasLayer.addLayer(SkyLayer);
-CanvasLayer.addLayer(NorthernLights);
-CanvasLayer.addLayer(CloudLayer);
-CanvasLayer.addLayer(SnowLayer);
-CanvasLayer.addLayer(WaterLayer);
-CanvasLayer.addLayer(CityLayer);
-CanvasLayer.addLayer(SnowLayer2);
 
-CanvasLayer.setDayCycle(1);
 var animTicks = 0;
 function animateProc() {
   CanvasLayer.paint();
   animTicks++;
-  CanvasLayer.setDayCycle(0.5 + 0.5 * Math.sin(animTicks / 100));
+  CanvasLayer.setDayCycle(0.5 + 0.5 * Math.sin(animTicks / 500));
   window.requestAnimationFrame(animateProc);
 }
+
+
+function ready(fn) {
+  if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
+    fn();
+  } else {
+    document.addEventListener('DOMContentLoaded', fn);
+  }
+}
+
+ready(() => {
+  const el = document.getElementById("entry-button");
+  el.addEventListener("click", () => { 
+    document.getElementById("intro-container").style.display = 'none';
+
+    CanvasLayer.addLayer(SkyLayer);
+    CanvasLayer.addLayer(NorthernLights);
+    CanvasLayer.addLayer(CloudLayer);
+    CanvasLayer.addLayer(SnowLayer);
+    CanvasLayer.addLayer(WaterLayer);
+    CanvasLayer.addLayer(CityLayer);
+    CanvasLayer.addLayer(SnowLayer2);
+
+    CanvasLayer.setDayCycle(1);
+    CanvasLayer.initialize('main');
+  });
+})
