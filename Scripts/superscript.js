@@ -125,5 +125,7 @@ var WaterControl = {
 function animateProc() {
     SkyControl.animate();
     WaterControl.draw();
+    StarControl.animate();
     window.requestAnimationFrame(animateProc);
+
 }

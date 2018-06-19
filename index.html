@@ -6,6 +6,7 @@
         <link rel="stylesheet" href="./Styles/superfancy.css">
         <script src="./Scripts/superscript.js" ></script>
         <script src="./Scripts/snow.js" ></script>
+        <script src="./Scripts/stars.js" ></script>
 
         <!-- Nabeelah's font here -->
 
@@ -19,6 +20,7 @@
         function startup() {
             SkyControl.initialize("skybackground");
             WaterControl.initialize("water", "waterCanvas");
+            StarControl.initialize("stars", "starsCanvas");
             animateProc();
         }
         </script>
@@ -27,6 +29,12 @@
         <div id="skybackground">
 
         </div>
+
+        <div id="stars">
+                <!-- stars here -->
+                <canvas id="starsCanvas" />      
+                </div>
+            
         
         <div id="misc">
             <!-- Cus we need a misc div ofc -->

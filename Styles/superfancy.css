@@ -28,7 +28,13 @@ tempdump {
   opacity: 0.5;
   filter: sepia(100%) hue-rotate(180deg) brightness(75%) saturate(300%);
 }
-
+#stars {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    top: 0%;
+    height: 50%;
+}
 #city {
   position: absolute;
   z-index: 15;
