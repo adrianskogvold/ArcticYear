@@ -284,6 +284,8 @@ var SnowLayer2 = {
   }
 };
 
+
+// TODO Move this water layer upwards to meet the mountain layer; note the offset
 var WaterLayer = {
   initialize: function(canvasLayer) {
     this.waterCanvas = document.createElement("canvas");
@@ -321,6 +323,8 @@ var WaterLayer = {
     this.waterCanvas.height = height * (1 - WaterMark);
     this.paintWater(this.waterCanvas.getContext("2d"), this.waterCanvas.width, this.waterCanvas.height);
 
+    // Draw sliced image onto the canvas
+    // Start at 0?
     let steps = 150;
     for(let i=0; i < steps; i++) {
       let h = height * (1 - WaterMark) / steps;
