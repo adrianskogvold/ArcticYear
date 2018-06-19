@@ -22,7 +22,7 @@ function Color(r, g, b, a) {
 }
 
 // best name ever, this is (in %) where the water in the scene starts
-var WaterMark = 0.8;
+var WaterMark = 0.72;
 
 // this object keeps track of all layers and handles drawing & canvas setup
 var CanvasLayer = {
@@ -160,15 +160,24 @@ var CloudLayer = {
 
 var CityLayer = {
   initialize: function(canvasLayer) {
-    this.nightCity = canvasLayer.loadImageFiltered("./Images/tromsocolor.png", "sepia(100%) hue-rotate(180deg) brightness(75%) saturate(300%)");
-    this.city = canvasLayer.loadImage("./Images/tromsocolor.png");
+    this.city = canvasLayer.loadImage("./Images/City.png");
+    this.nightCity = canvasLayer.loadImageFiltered("./Images/City.png", "sepia(100%) hue-rotate(180deg) brightness(75%) saturate(300%)");
+    this.tromsdalstin = canvasLayer.loadImage("./Images/Tromsdalstin.png");
+    this.floya = canvasLayer.loadImage("./Images/Floya.png");
+    this.nordFjellet = canvasLayer.loadImage("./Images/NordFjellet.png");
+
+    // this.nightCity = canvasLayer.loadImageFiltered("./Images/tromsocolor.png", "sepia(100%) hue-rotate(180deg) brightness(75%) saturate(300%)");
+    // this.city = canvasLayer.loadImage("./Images/tromsocolor.png");
   },
   paint: function(ctx, width, height) {
     let h = width * this.city.ratio;
     //  ctx.filter = ;
-    ctx.drawImage(this.city, 0, height * WaterMark - h, width, h);
+    ctx.drawImage(this.tromsdalstin, 0, height - h, width, h);
+    ctx.drawImage(this.nordFjellet, 0, height - h, width, h);
+    ctx.drawImage(this.floya, 0, height - h, width, h);
+    ctx.drawImage(this.city, 0, height - h, width, h);
     ctx.globalAlpha = this.nightAlpha;
-    ctx.drawImage(this.nightCity, 0, height * WaterMark - h, width, h);
+    ctx.drawImage(this.nightCity, 0, height - h, width, h);
     ctx.globalAlpha = 1;
   },  
   setDayCycle: function(value) {
