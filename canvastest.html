@@ -21,6 +21,9 @@
             left: 0;
             z-index: 1;
         }
+        #audio-control {
+            display: none;
+        }
         </style>
         <script type="text/javascript">
 
@@ -38,12 +41,12 @@
             <div id="entry">
                 <button id="entry-button">enter</button>
             </div>
-
-            <div id="audio-control">
-                <audio src="sounds/win95startup.mp3" loop autoplay controls></audio>
-            </div>
         </div>
 
         <canvas id="main"></canvas>
+
+        <div id="audio-control">
+            <audio src="sounds/win95startup.mp3" loop autoplay controls></audio>
+        </div>
     </body>
 </html>

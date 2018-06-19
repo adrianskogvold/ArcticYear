@@ -126,7 +126,7 @@ var SkyLayer = {
     grad.addColorStop(0, this.topColor.toString());
     grad.addColorStop(1, this.bottomColor.toString());
     ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, width, height * WaterMark);
+    ctx.fillRect(0, 0, width, height * (WaterMark - 0.05));
   },
   setDayCycle: function(amount) {
     this.topColor = this.dayColors.top.blend(this.nightColors.top, amount);
@@ -186,10 +186,13 @@ var CityLayer = {
     //  ctx.filter = ;
     const t = Math.sin(animTicks/100);
     const yPosition = height * WaterMark - h;
-    ctx.drawImage(this.tromsdalstin, t * 15, yPosition, width, h);
-    ctx.drawImage(this.nordFjellet, t * 20, yPosition, width, h);
-    ctx.drawImage(this.floya, t * 25, yPosition, width, h);
-    ctx.drawImage(this.city, t * 35, yPosition, width, h);
+    const drawnWidth = width * 1.05;
+    const deltaWidth = (drawnWidth - width)/2;
+    const drawnHeight = h * 1.05;
+    ctx.drawImage(this.tromsdalstin, t * 15 - deltaWidth, yPosition, drawnWidth, drawnHeight);
+    ctx.drawImage(this.nordFjellet, t * 20 - deltaWidth, yPosition, drawnWidth, drawnHeight);
+    ctx.drawImage(this.floya, t * 25 - deltaWidth, yPosition, drawnWidth, drawnHeight);
+    ctx.drawImage(this.city, t * 35 - deltaWidth, yPosition, drawnWidth, drawnHeight);
     ctx.globalAlpha = this.nightAlpha;
     // ctx.drawImage(this.nightCity, 0, height - h, width, h);
     ctx.globalAlpha = 1;
@@ -289,8 +292,8 @@ var WaterLayer = {
     this.city = canvasLayer.loadImage("./Images/tromsocolor.png");
   },
   fakeReflection: function(ctx, x, y, width, color) {
-    let reclectionLength = 100;
-    var grad = ctx.createLinearGradient(0, y, 0, y+reclectionLength);
+    let reflectionLength = 100;
+    var grad = ctx.createLinearGradient(0, y, 0, y + reflectionLength);
     color = color.replace(/rgb/i, "rgba").replace(")", ", ");
     grad.addColorStop(0, color + "1)");
     grad.addColorStop(0.5, color + "0.25)");
@@ -301,10 +304,10 @@ var WaterLayer = {
     ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.arc(x, Math.max(0, y) + width / 2, width / 2, 0, Math.PI * 2);
-    ctx.rect(x - width/2, Math.max(0,y) + width / 2, width, reclectionLength);
+    ctx.rect(x - width/2, Math.max(0,y) + width / 2, width, reflectionLength);
     ctx.closePath();
     ctx.fill();
-},
+  },
   paintWater: function(ctx, width, height) {
     ctx.globalAlpha = 0.25;
     ctx.scale(1, -0.5);
@@ -312,13 +315,15 @@ var WaterLayer = {
     ctx.scale(1, -1/0.5);
     ctx.globalAlpha = 1;
     for(let i=0; i < 50; i++) {
-      this.fakeReflection(ctx, i * width / 50 + 50 * Math.sin(i/ 2 + animTicks/50), 0, 10, "rgb(255, 255, 255)");
+      this.fakeReflection(ctx, i * width / 50 + 50 * Math.sin(i/ 2 + animTicks/500), 0, 10, "rgb(255, 255, 255)");
     }  
   },
   paint: function(ctx, width, height) {
     this.waterCanvas.width = width;
     this.waterCanvas.height = height * (1 - WaterMark);
     this.paintWater(this.waterCanvas.getContext("2d"), this.waterCanvas.width, this.waterCanvas.height);
+
+    // Reflections from city lights
     let steps = 150;
     for(let i=0; i < steps; i++) {
       let h = height * (1 - WaterMark) / steps;
@@ -337,7 +342,7 @@ var NorthernLights = {
       //{x: 0.1, y:0.1},
       {x: 0.6, y: 0.4},
       {x: 0.5, y: 0.7},
-      {x: 0.9, y: 0.8}
+      {x: 1.0, y: 0.8}
     ];
     this.globalAlpha = 0;
   },
@@ -348,8 +353,9 @@ var NorthernLights = {
     ctx.clearRect(0, 0, width, height);
     ctx.strokeStyle = "rgba(255, 255, 0, 0.15)";
     ctx.save();
+
+    //First Northern Light
     ctx.translate(-20, -10);
-    
     ctx.beginPath();
     ctx.moveTo(points[0].x * width, points[0].y * height);
     for (i = 1; i < points.length - 2; i ++)
@@ -358,14 +364,14 @@ var NorthernLights = {
        var yc = height * (points[i].y + points[i + 1].y) / 2;
        ctx.quadraticCurveTo(points[i].x * width, points[i].y * height, xc, yc);
     }
-    // curve through the last two points
+    // curve through the last point
     ctx.quadraticCurveTo(width * points[i].x, height * points[i].y, width * points[i+1].x, height * points[i+1].y);
     //ctx.closePath();
     ctx.stroke();
 
+    // Second Northern Light
     ctx.translate(40, 20);
     ctx.strokeStyle = "rgba(255, 128, 255, 0.15)";
-    
     ctx.beginPath();
     ctx.moveTo(points[0].x * width, points[0].y * height);
     for (i = 1; i < points.length - 2; i ++)
@@ -374,7 +380,7 @@ var NorthernLights = {
        var yc = height * (points[i].y + points[i + 1].y) / 2;
        ctx.quadraticCurveTo(points[i].x * width, points[i].y * height, xc, yc);
     }
-    // curve through the last two points
+    // curve through the last point
     ctx.quadraticCurveTo(width * points[i].x, height * points[i].y, width * points[i+1].x, height * points[i+1].y);
     //ctx.closePath();
     ctx.stroke();
@@ -383,6 +389,7 @@ var NorthernLights = {
 
     ctx.strokeStyle = "rgba(0, 255, 0, 0.6)";
 
+    // Last Northern Light
     ctx.beginPath();
     ctx.moveTo(points[0].x * width, points[0].y * height);
     for (i = 1; i < points.length - 2; i ++)
@@ -392,14 +399,10 @@ var NorthernLights = {
        ctx.quadraticCurveTo(points[i].x * width, points[i].y * height, xc, yc);
     }
     i = points.length - 2;
-    // curve through the last two points
+    // curve through the last point
     ctx.quadraticCurveTo(width * points[i].x, height * points[i].y, width * points[i+1].x, height * points[i+1].y);
     //ctx.closePath();
     ctx.stroke();
-    //for(i = 1; i < points.length - 2; i++) {
-    //  ctx.clearRect(points[i].x * width, 0, 10, height);
-    //}
-    
   },
   paintFx: function(ctx, width, height) {
     ctx.clearRect(0, 0, width, height);
