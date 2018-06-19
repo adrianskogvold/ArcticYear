@@ -14,6 +14,7 @@ Yea we dont know what we are doing either
 - [ ] Northern lights
 - [ ] Add in seasonal text
 - [x] Can we make clouds use the web animation API?
+- [ ] Make mountains interactive, so you can hover over them
 
 ## Idea Log
 - What if we made it informative about Tromso? So, this is Tromsdalstinden, this is how high it is, here is how much the record snowfall it got? Then we could use red outlines to indicate the area.
