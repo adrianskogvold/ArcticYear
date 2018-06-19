@@ -45,23 +45,6 @@
     }
 }
 
-@keyframes changeLetter {
-    0% {
-        content: "SOMMER";
-      }
-    50% {
-    color: white;
-    }
-    100% {
-    content: "HOST";
-    }
-}
-  
-#decovar::before {
-    content: "SOMMER";
-    animation: changeLetter 3s linear infinite alternate;
-} 
-
 body {
     background-color: #000;
 }
