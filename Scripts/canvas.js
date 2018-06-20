@@ -593,11 +593,13 @@ var NorthernLights = {
     ctx.globalAlpha = 0.5;
     ctx.lineWidth = 10;
     ctx.clearRect(0, 0, width, height);
-    ctx.strokeStyle = "rgba(255, 255, 0, 0.15)";
-    ctx.save();
 
     //First Northern Light
-    ctx.translate(-20, -10);
+    let translations = [{x:-20, y:-10}, {x:40, y:50}, {x:-20,y:-40}];
+    let colors = ["rgba(255, 255, 0, 0.15", "rgba(0, 255, 0, 0.15), rgba(0, 255, 0, 0.6)"];
+    for(let j = 0; j < translations.length; j++) {
+    ctx.translate(translations[j].x, translations[j].y);
+    ctx.strokeStyle = colors[j];
     ctx.beginPath();
     ctx.moveTo(points[0].x * width, points[0].y * height);
     for (i = 1; i < points.length - 2; i++) {
@@ -614,49 +616,7 @@ var NorthernLights = {
     );
     //ctx.closePath();
     ctx.stroke();
-
-    // Second Northern Light
-    ctx.translate(40, 50);
-    ctx.strokeStyle = "rgba(0, 255, 0, 0.15)";
-    ctx.beginPath();
-    ctx.moveTo(points[0].x * width, points[0].y * height);
-    for (i = 1; i < points.length - 2; i++) {
-      var xc = (width * (points[i].x + points[i + 1].x)) / 2;
-      var yc = (height * (points[i].y + points[i + 1].y)) / 2;
-      ctx.quadraticCurveTo(points[i].x * width, points[i].y * height, xc, yc);
-    }
-    // curve through the last point
-    ctx.quadraticCurveTo(
-      width * points[i].x,
-      height * points[i].y,
-      width * points[i + 1].x,
-      height * points[i + 1].y
-    );
-    //ctx.closePath();
-    ctx.stroke();
-
-    ctx.restore();
-
-    ctx.strokeStyle = "rgba(0, 255, 0, 0.6)";
-
-    // Last Northern Light
-    ctx.beginPath();
-    ctx.moveTo(points[0].x * width, points[0].y * height);
-    for (i = 1; i < points.length - 2; i++) {
-      var xc = (width * (points[i].x + points[i + 1].x)) / 2;
-      var yc = (height * (points[i].y + points[i + 1].y)) / 2;
-      ctx.quadraticCurveTo(points[i].x * width, points[i].y * height, xc, yc);
-    }
-    i = points.length - 2;
-    // curve through the last point
-    ctx.quadraticCurveTo(
-      width * points[i].x,
-      height * points[i].y,
-      width * points[i + 1].x,
-      height * points[i + 1].y
-    );
-    //ctx.closePath();
-    ctx.stroke();
+  }
   },
   paintFx: function(ctx, width, height) {
     ctx.clearRect(0, 0, width, height);
