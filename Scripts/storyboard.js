@@ -30,26 +30,29 @@ var StoryBoard = {
                 bottom: new Color(0, 0, 0)
             },
             stars: 0,
-            cityFilter: 1,
+            cityFilter: 0.5,
             clouds: 0,
-            waterReflections: 0,
+            waterReflections: 1,
             snow: 0,
             northernLights: 0,
             sun: 0,
             duration: 1000,
+            label: 'Winter'
           },
         // 2
         {
-            blackOverlay: 0.5,
+            blackOverlay: 0.3,
             skyColors: {
-                top: new Color(01, 22, 102),
-                bottom: new Color(14, 124, 224)
+                top: new Color(3, 11, 30),
+                bottom: new Color(0, 15, 40)
             },
             stars: 1,
             duration: 1000
         },
         {
+            cityFilter: 0.5,
             duration: 5000,
+            label: 'Winter'
         },
         /*
         // performance tests
@@ -74,18 +77,17 @@ var StoryBoard = {
 
         // 3
         {
-            cityFilter: 0,
             waterReflections: 1,
             skyColors: {
-                top: new Color(01, 22, 102),
-                bottom: new Color(14, 124, 224)
+                top: new Color(3, 11, 30),
+                bottom: new Color(0, 15, 40)
             },            
             duration: 1000
         },
         // 4
         {
             clouds: 1,
-            duration: 1000
+            duration: 15000
         },
         // 5
         {
@@ -99,24 +101,26 @@ var StoryBoard = {
         {
             clouds: 0,
             snow: 0,
+            blackOverlay: 0,
             northernLights: 1,            
-            duration: 1000
+            duration: 10000
         },
         // 7
         {
             //northernLights: 1,
-            blackOverlay: 0,
-            duration: 5000
+            duration: 20000
         },
         // 8 (transform to summer)
         {
+            cityFilter: 0,
             skyColors: {
                 top: new Color(92, 130, 189),
                 bottom: new Color(152, 192, 240)
             },
             stars: 0,
             northernLights: 0,         
-            duration: 1000
+            duration: 8000,
+            label: 'Summer'
         },
         // 9 (sun)
         {
@@ -126,7 +130,7 @@ var StoryBoard = {
         // 10 (clouds)
         {
             clouds: 1,
-            duration: 1000
+            duration: 15000
         },
         // 11 (rain)
         {
@@ -169,9 +173,14 @@ var StoryBoard = {
         if(this.nextState.hasOwnProperty('sun')){
             SunLayer.alpha = blend(this.currentState.sun, this.nextState.sun, f);
         }
-        
+        if(this.nextState.hasOwnProperty('cityFilter')){
+            CityLayer.hueRotate = blend(this.currentState.cityFilter, this.nextState.cityFilter, f);
+        }
         if(this.nextState.hasOwnProperty('waterReflections')) {
             WaterLayer.alpha = SnowLayer.alpha = blend(this.currentState.waterReflections, this.nextState.waterReflections, f);
+        }
+        if(this.nextState.hasOwnProperty('label')) {
+            document.getElementById("season-label").innerText = this.nextState.label;
         }
 
         if(f >= 1) {
