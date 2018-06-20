@@ -51,6 +51,10 @@ var StoryBoard = {
         {
             cityFilter: 0,
             waterReflections: 1,
+            skyColors: {
+                top: new Color(01, 22, 102),
+                bottom: new Color(14, 124, 224)
+            },            
             duration: 1000
         },
         // 4
@@ -67,6 +71,7 @@ var StoryBoard = {
         {
             clouds: 0,
             snow: 0,
+            northernLights: 1,            
             duration: 1000
         },
         // 7
@@ -109,19 +114,28 @@ var StoryBoard = {
         this.sceneStart = (new Date()).getTime();
     },
     timerTick: function() {
-        let timestamp = (new Date()).getTime();
-        let f = Math.min(1, (timestamp - this.sceneStart) / this.currentState.duration);
+        if(!this.currentState) return;
 
-        if(this.nextState.skyColors) {
+        let timestamp = (new Date()).getTime();
+        let f = Math.min(1, (timestamp - this.sceneStart) / this.nextState.duration);
+
+        if(this.nextState.hasOwnProperty('skyColors')) {
             SkyLayer.topColor = this.currentState.skyColors.top.blend(this.nextState.skyColors.top, f);
             SkyLayer.bottomColor = this.currentState.skyColors.bottom.blend(this.nextState.skyColors.bottom, f);
         }
-        if(this.nextState.clouds) {
+        if(this.nextState.hasOwnProperty('clouds')) {
             CloudLayer.cloudAlpha = blend(this.currentState.clouds, this.nextState.clouds, f);
         }
-        if(this.nextState.blackOverlay) {
-            BlackOverlay.alpha = SVGFEBlendElement(this.currentState.blackOverlay, this.nextState.blackOverlay, f);
+        if(this.nextState.hasOwnProperty('blackOverlay')) {
+            BlackOverlay.alpha = blend(this.currentState.blackOverlay, this.nextState.blackOverlay, f);
         }
+        if(this.nextState.hasOwnProperty('northernLights')) {
+            NorthernLights.alpha = blend(this.currentState.northernLights, this.nextState.northernLights, f);
+        }
+        if(this.nextState.hasOwnProperty('snow')) {
+            SnowLayer2.alpha = SnowLayer.alpha = blend(this.currentState.snow, this.nextState.snow, f);
+        }
+        
 
         if(f >= 1) {
             for(i in this.nextState)
@@ -130,8 +144,8 @@ var StoryBoard = {
             if(++this.sceneIndex >= this.scenes.length) {
                 this.sceneIndex = 2;
             }
+            this.nextState = cloneObject(this.scenes[this.sceneIndex]);
             this.sceneStart = timestamp;
         }
     }
-
 }
