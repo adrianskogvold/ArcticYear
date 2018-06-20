@@ -179,8 +179,8 @@ var StoryBoard = {
         if(this.nextState.hasOwnProperty('waterReflections')) {
             WaterLayer.alpha = SnowLayer.alpha = blend(this.currentState.waterReflections, this.nextState.waterReflections, f);
         }
-        if(this.nextState.hasOwnProperty('label')) {
-            document.getElementById("season-label").innerText = this.nextState.label;
+        if(this.nextState.hasOwnProperty('stars')) {
+            StarLayer.alpha = blend(this.currentState.stars, this.nextState.stars, f);
         }
 
         if(f >= 1) {
@@ -192,6 +192,10 @@ var StoryBoard = {
             }
             this.nextState = cloneObject(this.scenes[this.sceneIndex]);
             this.sceneStart = timestamp;
+
+            if(this.nextState.hasOwnProperty('label')) {
+                document.getElementById("season-label").innerText = this.nextState.label;
+            }
         }
     }
 }
