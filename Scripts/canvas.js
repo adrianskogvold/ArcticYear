@@ -1,5 +1,6 @@
 const SUMMER = 0;
 const WINTER = 1;
+const SNOW_SCALE = 0.2; // Size of snowflake adjuster
 
 /* holds rgb(a) values which can be converted into a style-compatible string.
    additionally it allows blending with another color (returns a new Color instance) */
@@ -309,7 +310,7 @@ var SnowLayer = {
       f.x += f.speedX * f.z;
       f.y += f.speedY * f.z;
       ctx.beginPath();
-      ctx.arc(f.x * width, f.y * height, 5 * (0.1 + f.z), 0, 2 * Math.PI);
+      ctx.arc(f.x * width, f.y * height, 5 * (0.1 + f.z) * SNOW_SCALE, 0, 2 * Math.PI);
       //ctx.endPath();
       ctx.fill();
       if (f.y > WaterMark) {
@@ -354,7 +355,7 @@ var SnowLayer2 = {
       f.x += f.speedX * f.z;
       f.y += f.speedY * f.z;
       ctx.beginPath();
-      ctx.arc(f.x * width, f.y * height, 5 * (0.1 + f.z), 0, 2 * Math.PI);
+      ctx.arc(f.x * width, f.y * height, 5 * (0.1 + f.z) * SNOW_SCALE, 0, 2 * Math.PI);
       if (f.y > 1.05) {
         f.y = -0.05;
         f.speedX = 0;
