@@ -280,6 +280,7 @@ const pointColors = ["rgb(255, 255, 255)"];
 
 const StarLayer = {
   stars: [],
+  previousWidth: 1,
   initialize: function(canvasLayer) {
     let starCount = 100;
     for (let i = 0; i < starCount; i++) {
@@ -294,8 +295,12 @@ const StarLayer = {
   },
 
   paint: function(ctx, width, height) {
-    //ctx.clearRect(0, 0, width, height);
     for (i in this.stars) {
+      if(this.previousWidth != 1 && this.previousWidth != width){
+        this.stars = [];
+        this.initialize();
+      }
+      this.previousWidth = width;
       ctx.fillStyle = pointColors[(i * 17) % pointColors.length];
       ctx.font = starsizes[Math.floor(Math.random() * starsizes.length)];
       let x = this.stars[i].x + 0.3;
