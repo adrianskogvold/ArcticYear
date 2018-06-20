@@ -43,8 +43,8 @@ var StoryBoard = {
         {
             blackOverlay: 0.3,
             skyColors: {
-                top: new Color(01, 22, 102),
-                bottom: new Color(14, 124, 224)
+                top: new Color(3, 11, 30),
+                bottom: new Color(0, 15, 40)
             },
             stars: 1,
             duration: 1000
@@ -79,8 +79,8 @@ var StoryBoard = {
         {
             waterReflections: 1,
             skyColors: {
-                top: new Color(01, 22, 102),
-                bottom: new Color(14, 124, 224)
+                top: new Color(3, 11, 30),
+                bottom: new Color(0, 15, 40)
             },            
             duration: 1000
         },
@@ -112,7 +112,7 @@ var StoryBoard = {
         },
         // 8 (transform to summer)
         {
-            cityFilter: 0.2,
+            cityFilter: 0,
             skyColors: {
                 top: new Color(92, 130, 189),
                 bottom: new Color(152, 192, 240)
