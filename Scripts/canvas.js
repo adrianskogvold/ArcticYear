@@ -313,6 +313,8 @@ const pointSizes = [1,2];
 
 const StarLayer = {
   stars: [],
+  alpha: 1,
+  previousWidth: 1,
   width: window.innerWidth,
   initialize: function(canvasLayer) {
     let starCount = 100;
@@ -328,6 +330,8 @@ const StarLayer = {
   },
 
   paint: function(ctx, width, height) {
+    if(this.alpha <= 0 ) return;
+    ctx.globalAlpha = this.alpha;
     if( this.width != width){
       this.stars = [];
       this.width = width;
@@ -355,6 +359,7 @@ const StarLayer = {
       ctx.fill();
       ctx.closePath();
     }
+    ctx.globalAlpha = 1;
   },
   setDayCycle: function(value) {
     this.nightAlpha = value;
@@ -750,6 +755,7 @@ CanvasLayer.setDayCycle(1);
     //document.getElementById("intro-container").style.display = "none";
 
     CanvasLayer.addLayer(SkyLayer, "Sky");
+    CanvasLayer.addLayer(SunLayer, "Black old sun");
     CanvasLayer.addLayer(StarLayer, "Stars");
     CanvasLayer.addLayer(NorthernLights, "Northern Lights");
     CanvasLayer.addLayer(MountainLayer, "Mountain");
