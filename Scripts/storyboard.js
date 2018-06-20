@@ -32,6 +32,7 @@ var StoryBoard = {
             stars: 0,
             cityFilter: 0.5,
             clouds: 0,
+            cloudAmount: 1,
             waterReflections: 1,
             snow: 0,
             northernLights: 0,
@@ -50,6 +51,8 @@ var StoryBoard = {
             duration: 1000
         },
         {
+            stars: 1,
+            cloudAmount: 1,
             cityFilter: 0.5,
             duration: 5000,
             label: 'Winter'
@@ -113,6 +116,7 @@ var StoryBoard = {
         // 8 (transform to summer)
         {
             cityFilter: 0,
+            waterReflections: 0,
             skyColors: {
                 top: new Color(92, 130, 189),
                 bottom: new Color(152, 192, 240)
@@ -125,6 +129,7 @@ var StoryBoard = {
         // 9 (sun)
         {
             sun: 1,
+            cloudAmount: 0.2,
             duration: 1000
         },
         // 10 (clouds)
@@ -139,7 +144,8 @@ var StoryBoard = {
         },
         // 12 (clouds)
         {
-            duration: 1000
+            clouds: 0,
+            duration: 10000
         },        
     ],
     initialize: function() {
@@ -161,6 +167,9 @@ var StoryBoard = {
         if(this.nextState.hasOwnProperty('clouds')) {
             CloudLayer.cloudAlpha = blend(this.currentState.clouds, this.nextState.clouds, f);
         }
+        if(this.nextState.hasOwnProperty('cloudAmount')) {
+            CloudLayer.cloudAmount = blend(this.currentState.cloudAmount, this.nextState.cloudAmount, f);
+        }
         if(this.nextState.hasOwnProperty('blackOverlay')) {
             BlackOverlay.alpha = blend(this.currentState.blackOverlay, this.nextState.blackOverlay, f);
         }
@@ -177,7 +186,7 @@ var StoryBoard = {
             CityLayer.hueRotate = blend(this.currentState.cityFilter, this.nextState.cityFilter, f);
         }
         if(this.nextState.hasOwnProperty('waterReflections')) {
-            WaterLayer.alpha = SnowLayer.alpha = blend(this.currentState.waterReflections, this.nextState.waterReflections, f);
+            WaterLayer.lightAlpha = SnowLayer.alpha = blend(this.currentState.waterReflections, this.nextState.waterReflections, f);
         }
         if(this.nextState.hasOwnProperty('stars')) {
             StarLayer.alpha = blend(this.currentState.stars, this.nextState.stars, f);

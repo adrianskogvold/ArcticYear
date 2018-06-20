@@ -59,7 +59,7 @@ var CanvasLayer = {
       ctx.filter = filter;
       ctx.drawImage(img, 0, 0);
     };
-    img.onload = () => {
+    img.onload = function() {
       result.applyFilter(filter);
       CanvasLayer.imageLoaded(result);
     };
@@ -156,6 +156,7 @@ function smoothstep(x) { return 3*x*x - 2*x*x*x; }
 var CloudLayer = {
   clouds: [],
   cloudAlpha: 1,
+  cloudAmount: 1,
   initialize: function(canvasLayer) {
     this.cloud1 = canvasLayer.loadImageFiltered("./Images/cloud1.png");
     this.cloud2 = canvasLayer.loadImageFiltered("./Images/cloud2.png");
@@ -171,7 +172,7 @@ var CloudLayer = {
   },
   paint: function(ctx, width, height) {
     ctx.globalAlpha = 1;
-    for (let i = 0; i < this.clouds.length; i++) {
+    for (let i = 0; i < Math.round(Math.min(1, this.cloudAmount) * this.clouds.length); i++) {
       let c = this.clouds[i];
       let w = width * c.size;
       let h = w * c.image.ratio;
@@ -472,16 +473,7 @@ var WaterLayer = {
     this.alpha = 1;
   },
   fakeReflection: function(ctx, x, y, width, color) {
-    let reflectionLength = 100;
-    var grad = ctx.createLinearGradient(0, y, 0, y + reflectionLength);
-    color = color.replace(/rgb/i, "rgba").replace(")", ", ");
-    grad.addColorStop(0, color + "1)");
-    //grad.addColorStop(0.5, color + "0.25)");
-    grad.addColorStop(1, color + "0)");
-    //grad.addColorStop(0.75, "rgba(255, 255, 255, 0.05)");
-
-    grad.addColorStop(1, "rgba(255, 255, 255, 0)");
-    ctx.fillStyle = grad;
+    let reflectionLength = 200;
     ctx.beginPath();
     //ctx.arc(x, Math.max(0, y) + width / 2, width / 2, 0, Math.PI * 2);
     ctx.rect(
@@ -493,6 +485,7 @@ var WaterLayer = {
     ctx.closePath();
     ctx.fill();
   },
+  lightAlpha: 1,
   paintWater: function(ctx, width, height) {
     ctx.globalAlpha = 0.2;
     ctx.scale(0.5, -0.5*0.33);
@@ -502,17 +495,25 @@ var WaterLayer = {
       -height * 3
     );
     ctx.scale(1, -1 / 0.75);
-    ctx.globalAlpha = 1;
-    /*
+    ctx.globalAlpha = this.lightAlpha;
+    
+    var grad = ctx.createLinearGradient(0, 0, 0, 200);
+    color = "rgba(255,255,192,";
+    grad.addColorStop(0, color + "0.6)");
+    //grad.addColorStop(0.5, color + "0.25)");
+    grad.addColorStop(1, color + "0)");
+    //grad.addColorStop(0.75, "rgba(255, 255, 255, 0.05)");
+    ctx.fillStyle = grad;
+
     for (let i = 0; i < 50; i++) {
       this.fakeReflection(
         ctx,
-        (i * width) / 50 + 50 * Math.sin(i / 2 + animTicks / 500),
+        (i * width * 2) / 50 + 50 * Math.sin(i / 2 + animTicks / 500),
         0,
-        10,
+        5,
         "rgb(255, 255, 255)"
       );
-    } */
+    } 
   },
   paint: function(ctx, width, height) {
     if(this.alpha <= 0) return;
@@ -678,7 +679,7 @@ var NorthernLights = {
     }
     for (let i = 0; i < this.points.length - 1; i++) {
       this.points[i].x += Math.sin(animTicks / 30 + i * 82) * 0.0001;
-      this.points[i].y = 0.6 + 0.35 * Math.sin(animTicks / 300 + i * 4);
+      this.points[i].y = 0.6 + 0.35 * Math.sin(animTicks / 120 + i * 4);
     }
     this.paintLight(
       this.canvas.getContext("2d"),
