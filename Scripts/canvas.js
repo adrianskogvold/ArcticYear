@@ -233,7 +233,7 @@ const SunLayer = {
         if (this.doomsize < 20){
           this.doomsize = width/2;
         }
-        ctx.globalAlpha = 0.98;
+        ctx.globalAlpha = this.alpha;
         let sunsize= this.doomsize;
         let c = this.sun;
         let x = (width/2) - (sunsize/2);
@@ -242,7 +242,7 @@ const SunLayer = {
         this.doomsize = this.doomsize * this.doomsizeMultiplier;
     } 
     else  {
-      ctx.globalAlpha = 0.8;
+      ctx.globalAlpha = this.alpha;
       let sunsize= width/4;
       let c = this.sun;
       let x = width - (sunsize/2) ;

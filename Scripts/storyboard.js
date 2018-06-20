@@ -35,8 +35,9 @@ var StoryBoard = {
             waterReflections: 0,
             snow: 0,
             northernLights: 0,
+            sun: 0,
             duration: 1000,
-        },
+          },
         // 2
         {
             blackOverlay: 0,
@@ -91,6 +92,7 @@ var StoryBoard = {
         },
         // 9 (sun)
         {
+            sun: 1,
             duration: 1000
         },
         // 10 (clouds)
@@ -100,6 +102,7 @@ var StoryBoard = {
         },
         // 11 (rain)
         {
+            sun: 0,
             duration: 1000
         },
         // 12 (clouds)
@@ -134,6 +137,9 @@ var StoryBoard = {
         }
         if(this.nextState.hasOwnProperty('snow')) {
             SnowLayer2.alpha = SnowLayer.alpha = blend(this.currentState.snow, this.nextState.snow, f);
+        }
+        if(this.nextState.hasOwnProperty('sun')){
+            SunLayer.alpha = blend(this.currentState.sun, this.nextState.sun, f);
         }
         
 
