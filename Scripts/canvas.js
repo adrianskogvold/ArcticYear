@@ -269,32 +269,35 @@ var CityLayer = {
 };
 
 const SunLayer = {
-  doomsun: false,
   doomsizeMultiplier: 1.0005,
   doomsize: 1,
   initialize: function(canvasLayer) {
-    this.sun = this.doomsun ? canvasLayer.loadImage("./Images/doomsun.png") : canvasLayer.loadImage("./Images/sun.png");
+    this.doom = false;
+    this.doomx = 1;
+    this.sun = canvasLayer.loadImage("./Images/sun.png");
+    this.doomsun = canvasLayer.loadImage("./Images/doomsun.png");
   },
   paint: function(ctx, width, height) {
-      if(this.doomsun){
+    ctx.globalAlpha = 1;
+      if(this.doom){
         if (this.doomsize < 20){
-          this.doomsize = width/2;
+          this.doomsize = width/8;
+          this.doomx = width - (this.doomsize/2) ;
         }
         ctx.globalAlpha = this.alpha;
         let sunsize= this.doomsize;
-        let c = this.sun;
-        let x = (width/2) - (sunsize/2);
+        let x = this.doomx;
         let y = -(sunsize/2);
-        ctx.drawImage(c, x, y, sunsize, sunsize);
+        ctx.drawImage(this.doomsun, Math.max(this.doomx, ((width/2) - (this.doomsize/2))), y, sunsize, sunsize);
         this.doomsize = this.doomsize * this.doomsizeMultiplier;
+        this.doomx -= 0.01;
     } 
     else  {
       ctx.globalAlpha = this.alpha;
       let sunsize= width/4;
-      let c = this.sun;
       let x = width - (sunsize/2) ;
       let y = -(sunsize/2);
-      ctx.drawImage(c, x, y, sunsize, sunsize);
+      ctx.drawImage(this.sun, x, y, sunsize, sunsize);
     }
     ctx.globalAlpha = 1;
 
@@ -718,6 +721,10 @@ function animateProc() {
   //CanvasLayer.setDayCycle(0.5 + 0.5 * Math.sin(animTicks / 500));
   StoryBoard.timerTick();
   window.requestAnimationFrame(animateProc);
+}
+
+function startDoom(){
+  SunLayer.doom = true;
 }
 
 function ready(fn) {
