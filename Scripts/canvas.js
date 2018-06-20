@@ -186,19 +186,14 @@ var CloudLayer = {
 
 var CityLayer = {
   initialize: function(canvasLayer) {
-    const blueFilter =  "sepia(100%) hue-rotate(190deg) brightness(100%) saturate(100%)";
-    this.city = canvasLayer.loadImageFiltered("./Images/CityWithRoadCutout.png", blueFilter);
-    this.nightCity = canvasLayer.loadImageFiltered(
-      "./Images/CityWithRoadCutout.png",
-      "sepia(100%) hue-rotate(180deg) brightness(75%) saturate(300%)"
-    );
-    this.tromsdalstin = canvasLayer.loadImageFiltered("./Images/Tromsdalstin.png", blueFilter);
-    this.floya = canvasLayer.loadImageFiltered("./Images/Floya.png", blueFilter);
-    this.nordFjellet = canvasLayer.loadImageFiltered("./Images/NordFjellet.png", blueFilter);
+    this.city = canvasLayer.loadImage("./Images/CityWithRoadCutout.png");
+    this.tromsdalstin = canvasLayer.loadImage("./Images/Tromsdalstin.png");
+    this.floya = canvasLayer.loadImage("./Images/Floya.png");
+    this.nordFjellet = canvasLayer.loadImage("./Images/NordFjellet.png");
   },
   paint: function(ctx, width, height) {
     let h = width * this.city.ratio;
-    //  ctx.filter = ;
+    ctx.filter =  `sepia(100%) hue-rotate(${this.hueRotate * 360}deg) brightness(100%) saturate(100%)`; 
     // const t = Math.sin(animTicks/100); // For parallaxing
     const t = 0;
     const yPosition = height * WaterMark * 1.03 - h;
