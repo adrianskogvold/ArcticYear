@@ -151,13 +151,15 @@ var SkyLayer = {
   }
 };
 
+function smoothstep(x) { return 3*x*x - 2*x*x*x; }
+
 var CloudLayer = {
   clouds: [],
   cloudAlpha: 1,
   initialize: function(canvasLayer) {
-    this.cloud1 = canvasLayer.loadImage("./Images/cloud1.png");
-    this.cloud2 = canvasLayer.loadImage("./Images/cloud2.png");
-    for (let i = 0; i < 16; i++) {
+    this.cloud1 = canvasLayer.loadImageFiltered("./Images/cloud1.png");
+    this.cloud2 = canvasLayer.loadImageFiltered("./Images/cloud2.png");
+    for (let i = 0; i < 36; i++) {
       this.clouds.push({
         x: Math.random(),
         y: Math.random() * 0.5,
@@ -173,10 +175,10 @@ var CloudLayer = {
       let c = this.clouds[i];
       let w = width * c.size;
       let h = w * c.image.ratio;
-      let x = c.x * width - w / 2;// + 500 * Math.sin(animTicks / 1000 + i / 2);
+      let x = c.x * width - w / 2 + 500 * Math.sin(animTicks / 1000 + i / 2);
       if(this.cloudAlpha < 1) {
-        let outx = c.x>0.5 ? x + width + w : x - (width + w);
-        x = outx + (x - outx) * Math.cos(1 - this.cloudAlpha);
+        let outx = c.x>0.5 ?  (width + w) : - (width + w);
+        x = outx + (x - outx) * smoothstep(Math.min(1, this.cloudAlpha * (1 + i/60)));
       }
       let y = c.y * height - h / 2;
       ctx.drawImage(c.image, x, y, w, h);
@@ -188,15 +190,13 @@ var CloudLayer = {
   }
 };
 
-var CityLayer = {
+var MountainLayer = {
   initialize: function(canvasLayer) {
-    this.city = canvasLayer.loadImage("./Images/CityWithRoadCutout.png");
     this.tromsdalstin = canvasLayer.loadImage("./Images/Tromsdalstin.png");
-    this.floya = canvasLayer.loadImage("./Images/Floya.png");
-    this.nordFjellet = canvasLayer.loadImage("./Images/NordFjellet.png");
   },
   paint: function(ctx, width, height) {
-    let h = width * this.city.ratio;
+    ctx.globalAlpha = 1;
+    let h = width * this.tromsdalstin.ratio;
     ctx.filter =  `sepia(100%) hue-rotate(${this.hueRotate * 360}deg) brightness(100%) saturate(100%)`; 
     // const t = Math.sin(animTicks/100); // For parallaxing
     const t = 0;
@@ -211,6 +211,32 @@ var CityLayer = {
       drawnWidth,
       drawnHeight
     );
+  }
+};
+
+var CityLayer = {
+  initialize: function(canvasLayer) {
+    this.city = canvasLayer.loadImage("./Images/CityWithRoadCutout.png");
+    this.floya = canvasLayer.loadImage("./Images/Floya.png");
+    this.nordFjellet = canvasLayer.loadImage("./Images/NordFjellet.png");
+  },
+  paint: function(ctx, width, height) {
+    let h = width * this.city.ratio;
+    ctx.filter =  `sepia(100%) hue-rotate(${this.hueRotate * 360}deg) brightness(100%) saturate(100%)`; 
+    // const t = Math.sin(animTicks/100); // For parallaxing
+    const t = 0;
+    const yPosition = height * WaterMark * 1.03 - h;
+    const drawnWidth = width * 1.02;
+    const deltaWidth = (drawnWidth - width) / 2;
+    const drawnHeight = h * 1.05;
+    /*
+    ctx.drawImage(
+      this.tromsdalstin,
+      t * 15 - deltaWidth,
+      yPosition,
+      drawnWidth,
+      drawnHeight
+    );*/
     ctx.drawImage(
       this.nordFjellet,
       t * 20 - deltaWidth,
@@ -552,7 +578,7 @@ var NorthernLights = {
       //{x: 0.1, y:0.1},
       { x: 0.6, y: 0.4 },
       { x: 0.5, y: 0.7 },
-      { x: 1.0, y: 0.8 }
+      { x: 1.0, y: 1.0 }
     ];
     this.globalAlpha = 0;
   },
@@ -585,7 +611,7 @@ var NorthernLights = {
 
     // Second Northern Light
     ctx.translate(40, 50);
-    ctx.strokeStyle = "rgba(192, 192, 255, 0.25)";
+    ctx.strokeStyle = "rgba(0, 255, 0, 0.15)";
     ctx.beginPath();
     ctx.moveTo(points[0].x * width, points[0].y * height);
     for (i = 1; i < points.length - 2; i++) {
@@ -650,7 +676,7 @@ var NorthernLights = {
     }
     for (let i = 0; i < this.points.length - 1; i++) {
       this.points[i].x += Math.sin(animTicks / 30 + i * 82) * 0.0001;
-      this.points[i].y = 0.5 + 0.35 * Math.sin(animTicks / 300 + i * 4);
+      this.points[i].y = 0.6 + 0.35 * Math.sin(animTicks / 300 + i * 4);
     }
     this.paintLight(
       this.canvas.getContext("2d"),
@@ -722,6 +748,7 @@ CanvasLayer.setDayCycle(1);
     CanvasLayer.addLayer(SkyLayer, "Sky");
     CanvasLayer.addLayer(StarLayer, "Stars");
     CanvasLayer.addLayer(NorthernLights, "Northern Lights");
+    CanvasLayer.addLayer(MountainLayer, "Mountain");
     CanvasLayer.addLayer(CloudLayer, "Clouds");
     //CanvasLayer.addLayer(SnowLayer, "Snow");
     CanvasLayer.addLayer(WaterLayer, "Water");
