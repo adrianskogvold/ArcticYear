@@ -110,18 +110,9 @@ var CanvasLayer = {
 };
 
 var SkyLayer = {
-  dayColors: {
-    top: new Color(92, 130, 189),
-    bottom: new Color(152, 192, 240)
-  },
-  nightColors: {
-    // (#011642, #0e58bc
-    top: new Color(01, 22, 102),
-    bottom: new Color(14, 124, 224)
-  },
+    topColor: new Color(224, 22, 224),
+    bottomColor: new Color(224, 124, 224),
   initialize: function(canvasLayer) {
-    this.topColor = this.dayColors.top;
-    this.bottomColor = this.dayColors.bottom;
     return this;
   },
   paint: function(ctx, width, height) {
@@ -132,11 +123,11 @@ var SkyLayer = {
     ctx.fillRect(0, 0, width, height * (WaterMark - 0.05));
   },
   setDayCycle: function(amount) {
-    this.topColor = this.dayColors.top.blend(this.nightColors.top, amount);
-    this.bottomColor = this.dayColors.bottom.blend(
-      this.nightColors.bottom,
-      amount
-    );
+    //this.topColor = this.dayColors.top.blend(this.nightColors.top, amount);
+    //this.bottomColor = this.dayColors.bottom.blend(
+    //  this.nightColors.bottom,
+    //  amount
+    //);
   }
 };
 
@@ -231,6 +222,42 @@ var CityLayer = {
   }
 };
 
+const SunLayer = {
+  doomsun: false,
+  doomsizeMultiplier: 1.0005,
+  doomsize: 1,
+  initialize: function(canvasLayer) {
+    this.sun = this.doomsun ? canvasLayer.loadImage("./Images/doomsun.png") : canvasLayer.loadImage("./Images/sun.png");
+  },
+  paint: function(ctx, width, height) {
+      if(this.doomsun){
+        if (this.doomsize < 20){
+          this.doomsize = width/2;
+        }
+        ctx.globalAlpha = 0.98;
+        let sunsize= this.doomsize;
+        let c = this.sun;
+        let x = (width/2) - (sunsize/2);
+        let y = -(sunsize/2);
+        ctx.drawImage(c, x, y, sunsize, sunsize);
+        this.doomsize = this.doomsize * this.doomsizeMultiplier;
+    } 
+    else  {
+      ctx.globalAlpha = 0.8;
+      let sunsize= width/4;
+      let c = this.sun;
+      let x = width - (sunsize/2) ;
+      let y = -(sunsize/2);
+      ctx.drawImage(c, x, y, sunsize, sunsize);
+    }
+    ctx.globalAlpha = 1;
+
+  },
+  setDayCycle: function(value) {
+    // hmmm...
+  }
+}
+
 const starTypes = ["✵", "✴", "✦", "✸"];
 const starsizes = ["5px Arial", "6px Arial"];
 const screensize = window.innerWidth;
@@ -252,7 +279,7 @@ const StarLayer = {
   },
 
   paint: function(ctx, width, height) {
-    ctx.clearRect(0, 0, width, height);
+    //ctx.clearRect(0, 0, width, height);
     for (i in this.stars) {
       ctx.fillStyle = pointColors[(i * 17) % pointColors.length];
       ctx.font = starsizes[Math.floor(Math.random() * starsizes.length)];
@@ -603,11 +630,24 @@ var NorthernLights = {
   }
 };
 
+var BlackOverlay = {
+  initialize: function() {},
+  alpha: 0,
+  paint: function(ctx, width, height) {
+    if(this.alpha<=0) return;
+    ctx.fillStyle="#000";
+    ctx.globalAlpha=this.alpha;
+    ctx.fillRect(0, 0, width, height);
+    ctx.globalAlpha=1;
+  }
+};
+
 var animTicks = 0;
 function animateProc() {
   CanvasLayer.paint();
   animTicks++;
-  CanvasLayer.setDayCycle(0.5 + 0.5 * Math.sin(animTicks / 500));
+  //CanvasLayer.setDayCycle(0.5 + 0.5 * Math.sin(animTicks / 500));
+  StoryBoard.timerTick();
   window.requestAnimationFrame(animateProc);
 }
 
@@ -636,20 +676,22 @@ CanvasLayer.addLayer(SnowLayer2);
 CanvasLayer.setDayCycle(1);
     CanvasLayer.initialize('main');*/
   const el = document.getElementById("entry-button");
-  el.addEventListener("click", () => {
-    document.getElementById("intro-container").style.display = "none";
+  {//el.addEventListener("click", () => {
+    //document.getElementById("intro-container").style.display = "none";
 
     CanvasLayer.addLayer(SkyLayer);
     CanvasLayer.addLayer(StarLayer);
     CanvasLayer.addLayer(NorthernLights);
+    CanvasLayer.addLayer(SunLayer);
     CanvasLayer.addLayer(CloudLayer);
     CanvasLayer.addLayer(SnowLayer);
     CanvasLayer.addLayer(WaterLayer);
     CanvasLayer.addLayer(CityLayer);
     CanvasLayer.addLayer(SnowLayer2);
-    // CanvasLayer.addLayer(PaperTexture);
+    CanvasLayer.addLayer(BlackOverlay);
 
-    CanvasLayer.setDayCycle(1);
+    //CanvasLayer.setDayCycle(1);
+    StoryBoard.initialize();
     CanvasLayer.initialize("main");
-  });
+  }//);
 });
