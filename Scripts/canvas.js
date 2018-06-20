@@ -1,5 +1,6 @@
 const SUMMER = 0;
 const WINTER = 1;
+const SNOW_SCALE = 0.2; // Size of snowflake adjuster
 
 /* holds rgb(a) values which can be converted into a style-compatible string.
    additionally it allows blending with another color (returns a new Color instance) */
@@ -109,18 +110,9 @@ var CanvasLayer = {
 };
 
 var SkyLayer = {
-  dayColors: {
-    top: new Color(92, 130, 189),
-    bottom: new Color(152, 192, 240)
-  },
-  nightColors: {
-    // (#011642, #0e58bc
-    top: new Color(01, 22, 102),
-    bottom: new Color(14, 124, 224)
-  },
+    topColor: new Color(224, 22, 224),
+    bottomColor: new Color(224, 124, 224),
   initialize: function(canvasLayer) {
-    this.topColor = this.dayColors.top;
-    this.bottomColor = this.dayColors.bottom;
     return this;
   },
   paint: function(ctx, width, height) {
@@ -131,11 +123,11 @@ var SkyLayer = {
     ctx.fillRect(0, 0, width, height * (WaterMark - 0.05));
   },
   setDayCycle: function(amount) {
-    this.topColor = this.dayColors.top.blend(this.nightColors.top, amount);
-    this.bottomColor = this.dayColors.bottom.blend(
-      this.nightColors.bottom,
-      amount
-    );
+    //this.topColor = this.dayColors.top.blend(this.nightColors.top, amount);
+    //this.bottomColor = this.dayColors.bottom.blend(
+    //  this.nightColors.bottom,
+    //  amount
+    //);
   }
 };
 
@@ -345,7 +337,7 @@ var SnowLayer = {
       f.x += f.speedX * f.z;
       f.y += f.speedY * f.z;
       ctx.beginPath();
-      ctx.arc(f.x * width, f.y * height, 5 * (0.1 + f.z), 0, 2 * Math.PI);
+      ctx.arc(f.x * width, f.y * height, 5 * (0.1 + f.z) * SNOW_SCALE, 0, 2 * Math.PI);
       //ctx.endPath();
       ctx.fill();
       if (f.y > WaterMark) {
@@ -390,7 +382,7 @@ var SnowLayer2 = {
       f.x += f.speedX * f.z;
       f.y += f.speedY * f.z;
       ctx.beginPath();
-      ctx.arc(f.x * width, f.y * height, 5 * (0.1 + f.z), 0, 2 * Math.PI);
+      ctx.arc(f.x * width, f.y * height, 5 * (0.1 + f.z) * SNOW_SCALE, 0, 2 * Math.PI);
       if (f.y > 1.05) {
         f.y = -0.05;
         f.speedX = 0;
@@ -616,11 +608,24 @@ var NorthernLights = {
   }
 };
 
+var BlackOverlay = {
+  initialize: function() {},
+  alpha: 0,
+  paint: function(ctx, width, height) {
+    if(this.alpha<=0) return;
+    ctx.fillStyle="#000";
+    ctx.globalAlpha=this.alpha;
+    ctx.fillRect(0, 0, width, height);
+    ctx.globalAlpha=1;
+  }
+};
+
 var animTicks = 0;
 function animateProc() {
   CanvasLayer.paint();
   animTicks++;
-  CanvasLayer.setDayCycle(0.5 + 0.5 * Math.sin(animTicks / 500));
+  //CanvasLayer.setDayCycle(0.5 + 0.5 * Math.sin(animTicks / 500));
+  StoryBoard.timerTick();
   window.requestAnimationFrame(animateProc);
 }
 
@@ -649,8 +654,8 @@ CanvasLayer.addLayer(SnowLayer2);
 CanvasLayer.setDayCycle(1);
     CanvasLayer.initialize('main');*/
   const el = document.getElementById("entry-button");
-  el.addEventListener("click", () => {
-    document.getElementById("intro-container").style.display = "none";
+  {//el.addEventListener("click", () => {
+    //document.getElementById("intro-container").style.display = "none";
 
     CanvasLayer.addLayer(SkyLayer);
     CanvasLayer.addLayer(StarLayer);
@@ -661,8 +666,10 @@ CanvasLayer.setDayCycle(1);
     CanvasLayer.addLayer(WaterLayer);
     CanvasLayer.addLayer(CityLayer);
     CanvasLayer.addLayer(SnowLayer2);
+    CanvasLayer.addLayer(BlackOverlay);
 
-    CanvasLayer.setDayCycle(1);
+    //CanvasLayer.setDayCycle(1);
+    StoryBoard.initialize();
     CanvasLayer.initialize("main");
-  });
+  }//);
 });

@@ -14,7 +14,7 @@
             margin: 0px;
             background-color: #151A2C;
         }
-        #main-container, #main {
+        #main-container {
             width: 100%;
             height: 100%;
             position: absolute;
@@ -22,6 +22,18 @@
             left: 0;
             z-index: 1;
         }
+        #main {
+            width: 97%;
+            height: 97%;
+            border-radius: 15px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            border: 1px solid #fff;
+        }
+
         #audio-control {
             display: none;
         }
@@ -41,8 +53,10 @@
 
         </script>
         <script src="./Scripts/canvas.js" ></script>
+        <script src="./Scripts/storyboard.js" ></script>
     </head>
     <body>
+        <!--
         <div id="intro-container">
             <div id="intro">• One Year&hairsp;in Tromsø •</div>
         
@@ -53,7 +67,7 @@
             <div id="entry">
                 <button id="entry-button">enter</button>
             </div>
-        </div>
+        </div> //-->
 
         <div id="main-container">
             <div id="season-label">
