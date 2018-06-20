@@ -303,19 +303,20 @@ const SunLayer = {
   }
 }
 
-const starTypes = ["✵", "✴", "✦", "✸"];
-const starsizes = ["5px Arial", "6px Arial"];
-const screensize = window.innerWidth;
+//const starTypes = ["✵", "✴", "✦", "✸"];
+//const starsizes = ["5px Arial"];
 const pointColors = ["rgb(255, 255, 255)"];
+const pointSizes = [1,2];
 
 const StarLayer = {
   stars: [],
   alpha: 1,
   previousWidth: 1,
+  width: window.innerWidth,
   initialize: function(canvasLayer) {
     let starCount = 100;
     for (let i = 0; i < starCount; i++) {
-      let x = Math.ceil(Math.random() * screensize);
+      let x = Math.ceil(Math.random() * this.width);
       let y = Math.ceil(Math.random() * 800) - 200;
       let star = {
         x,
@@ -328,14 +329,14 @@ const StarLayer = {
   paint: function(ctx, width, height) {
     if(this.alpha <= 0 ) return;
     ctx.globalAlpha = this.alpha;
+    if( this.width != width){
+      this.stars = [];
+      this.width = width;
+      this.initialize();
+    }
     for (i in this.stars) {
-      if(this.previousWidth != 1 && this.previousWidth != width){
-        this.stars = [];
-        this.initialize();
-      }
-      this.previousWidth = width;
-      ctx.fillStyle = pointColors[(i * 17) % pointColors.length];
-      ctx.font = starsizes[Math.floor(Math.random() * starsizes.length)];
+      ctx.fillStyle = pointColors[(i) % pointColors.length];
+      //ctx.font = starsizes[Math.floor(Math.random() * starsizes.length)];
       let x = this.stars[i].x + 0.3;
       let t = Math.sin((x / width) * Math.PI);
       let ydirection = -1;
@@ -343,18 +344,15 @@ const StarLayer = {
         x = 0;
         this.stars[i].y = Math.ceil(Math.random() * 800) - 200;
       }
-      if (x > screensize / 2) {
+      if (x > width / 2) {
         ydirection = 1;
       }
-      let curvesize = 0.2 * (1 - t);
+      let curvesize = 0.3 * (1 - t);
       this.stars[i].x = x;
       this.stars[i].y = this.stars[i].y + curvesize * ydirection;
       ctx.beginPath();
-      ctx.fillText(
-        starTypes[i % starTypes.length],
-        this.stars[i].x,
-        this.stars[i].y
-      );
+      ctx.arc(this.stars[i].x, this.stars[i].y, pointSizes[i % pointSizes.length], 0, 2 * Math.PI);
+
       ctx.fill();
       ctx.closePath();
     }
