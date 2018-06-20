@@ -39,7 +39,7 @@ var StoryBoard = {
         },
         // 2
         {
-            blackOverlay: 0,
+            blackOverlay: 0.5,
             skyColors: {
                 top: new Color(01, 22, 102),
                 bottom: new Color(14, 124, 224)
@@ -47,6 +47,30 @@ var StoryBoard = {
             stars: 1,
             duration: 1000
         },
+        {
+            duration: 5000,
+        },
+        /*
+        // performance tests
+        {
+            blackOverlay: 0.5,
+            skyColors: {
+                top: new Color(255, 0, 0),
+                bottom: new Color(0, 0, 0)
+            },
+            stars: 1,
+            cityFilter: 1,
+            clouds: 1,
+            waterReflections: 1,
+            snow: 1,
+            northernLights: 1,
+            duration: 1000,
+        },
+        {
+            blackOverlay: 0,
+            duration: 10000
+        },*/
+
         // 3
         {
             cityFilter: 0,
@@ -67,6 +91,9 @@ var StoryBoard = {
             snow: 1,
             duration: 1000
         },
+        {
+            duration: 5000
+        },
         // 6
         {
             clouds: 0,
@@ -76,8 +103,9 @@ var StoryBoard = {
         },
         // 7
         {
-            northernLights: 1,
-            duration: 1000
+            //northernLights: 1,
+            blackOverlay: 0,
+            duration: 5000
         },
         // 8 (transform to summer)
         {
@@ -135,7 +163,9 @@ var StoryBoard = {
         if(this.nextState.hasOwnProperty('snow')) {
             SnowLayer2.alpha = SnowLayer.alpha = blend(this.currentState.snow, this.nextState.snow, f);
         }
-        
+        if(this.nextState.hasOwnProperty('waterReflections')) {
+            WaterLayer.alpha = SnowLayer.alpha = blend(this.currentState.waterReflections, this.nextState.waterReflections, f);
+        }
 
         if(f >= 1) {
             for(i in this.nextState)

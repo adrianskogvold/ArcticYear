@@ -37,6 +37,16 @@
         #audio-control {
             display: none;
         }
+        #debuginfo {
+            position: absolute;
+            left:0px;
+            top:0px;
+            width: 300px;
+            background-color: rgba(0, 0, 0, 1);
+            color: #fff;
+            z-index: 100;
+            font-family: 'sans-serif';
+        }
         #season-label {
             font-family: "jabin";
             position: absolute;
@@ -72,8 +82,9 @@
         <div id="main-container">
             <div id="season-label">
                 Winter
-            </div>
+            </div> 
             <canvas id="main"></canvas>
+            <div id="debuginfo"></div>
         </div>
 
         <div id="audio-control">

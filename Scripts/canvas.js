@@ -25,7 +25,7 @@ function Color(r, g, b, a) {
 }
 
 // best name ever, this is (in %) where the water in the scene starts
-var WaterMark = 0.72;
+var WaterMark = 0.76;
 
 // this object keeps track of all layers and handles drawing & canvas setup
 var CanvasLayer = {
@@ -89,8 +89,26 @@ var CanvasLayer = {
       );
       return;
     }
-    for (let i = 0; i < this.layers.length; i++)
+    let t = (new Date()).getTime();
+    let start = t;
+    let rendertimes = [];
+    for (let i = 0; i < this.layers.length; i++) {      
       this.layers[i].paint(ctx, width, height);
+      let t2 = (new Date()).getTime();
+      rendertimes.push({name: this.layers[i]._name || "Layer "+i, renderTime: t2 - t});
+      t = t2;
+    }
+    if(animTicks % 10 === 0) {
+      let r = "<h3>Render Times</h3><table>";
+      for(i in rendertimes) {
+        r += "<tr><td>" + rendertimes[i].name + "</td><td>" + rendertimes[i].renderTime+ "ms </td></tr>";
+      }
+      let ffs = this.lastRender ? (start - this.lastRender) : (t-start);
+    
+      r += "</table><h3>Total:" + (t - start) + "ms (+"+(ffs - (t-start))+"ms), " +(1000 / ffs).toFixed(2) + " fps</h3>";
+      document.getElementById("debuginfo").innerHTML = r;
+    }
+    this.lastRender = start;
   },
   // this method should be called when the page is loaded
   initialize: function(targetCanvas) {
@@ -98,7 +116,9 @@ var CanvasLayer = {
     animateProc();
   },
   // use this method to add layers to the scene
-  addLayer: function(layer) {
+  addLayer: function(layer, name) {
+    if(name)
+    layer["_name"] = name;
     this.layers.push(layer);
     layer.initialize(this);
   },
@@ -180,7 +200,7 @@ var CityLayer = {
     //  ctx.filter = ;
     // const t = Math.sin(animTicks/100); // For parallaxing
     const t = 0;
-    const yPosition = height * WaterMark - h;
+    const yPosition = height * WaterMark * 1.03 - h;
     const drawnWidth = width * 1.05;
     const deltaWidth = (drawnWidth - width) / 2;
     const drawnHeight = h * 1.05;
@@ -277,7 +297,7 @@ const StarLayer = {
 var SnowLayer = {
   snow: [],
   initialize: function(canvasLayer) {
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 500; i++) {
       this.snow.push({
         x: Math.random(),
         y: Math.random(),
@@ -322,7 +342,7 @@ var SnowLayer = {
 var SnowLayer2 = {
   snow: [],
   initialize: function(canvasLayer) {
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 200; i++) {
       this.snow.push({
         x: Math.random(),
         y: Math.random(),
@@ -352,7 +372,7 @@ var SnowLayer2 = {
         f.speedX = 0;
         f.speedY = 0.001;
       }
-      ctx.closePath();
+      //ctx.closePath();
       ctx.fill();
       // ctx.arc(x, y, 1, 0, Math.PI * 2);
       // ctx.fillText("*", f.x * width, f.y * height);
@@ -364,28 +384,40 @@ var SnowLayer2 = {
   }
 };
 
+var CopyLayer = {
+  initialize: function(canvasLayer) {
+    this.canvas = document.createElement("canvas");
+  },
+  paint: function(ctx, width, height) {
+    this.canvas.width = width;
+    this.canvas.height = height;
+    this.canvas.getContext("2d").drawImage(CanvasLayer.canvas, 0, 0);
+  }
+};
+
 // TODO Move this water layer upwards to meet the mountain layer; note the offset
 var WaterLayer = {
   initialize: function(canvasLayer) {
     this.waterCanvas = document.createElement("canvas");
     this.city = canvasLayer.loadImage("./Images/tromsocolor.png");
+    this.alpha = 1;
   },
   fakeReflection: function(ctx, x, y, width, color) {
     let reflectionLength = 100;
     var grad = ctx.createLinearGradient(0, y, 0, y + reflectionLength);
     color = color.replace(/rgb/i, "rgba").replace(")", ", ");
     grad.addColorStop(0, color + "1)");
-    grad.addColorStop(0.5, color + "0.25)");
+    //grad.addColorStop(0.5, color + "0.25)");
     grad.addColorStop(1, color + "0)");
     //grad.addColorStop(0.75, "rgba(255, 255, 255, 0.05)");
 
     grad.addColorStop(1, "rgba(255, 255, 255, 0)");
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.arc(x, Math.max(0, y) + width / 2, width / 2, 0, Math.PI * 2);
+    //ctx.arc(x, Math.max(0, y) + width / 2, width / 2, 0, Math.PI * 2);
     ctx.rect(
       x - width / 2,
-      Math.max(0, y) + width / 2,
+      Math.max(0, y),
       width,
       reflectionLength
     );
@@ -393,17 +425,16 @@ var WaterLayer = {
     ctx.fill();
   },
   paintWater: function(ctx, width, height) {
-    ctx.globalAlpha = 0.25;
-    ctx.scale(1, -0.5);
+    ctx.globalAlpha = 0.2;
+    ctx.scale(1, -0.33);
     ctx.drawImage(
-      this.city,
+      CopyLayer.canvas, //this.city,
       0,
-      -width * this.city.ratio,
-      width,
-      width * this.city.ratio
+      -height * 3
     );
-    ctx.scale(1, -1 / 0.5);
+    ctx.scale(1, -1 / 0.75);
     ctx.globalAlpha = 1;
+    /*
     for (let i = 0; i < 50; i++) {
       this.fakeReflection(
         ctx,
@@ -412,9 +443,10 @@ var WaterLayer = {
         10,
         "rgb(255, 255, 255)"
       );
-    }
+    } */
   },
   paint: function(ctx, width, height) {
+    if(this.alpha <= 0) return;
     this.waterCanvas.width = width;
     this.waterCanvas.height = height * (1 - WaterMark);
     this.paintWater(
@@ -426,6 +458,8 @@ var WaterLayer = {
     // Draw sliced image onto the canvas
     // Start at 0?
     let steps = 150;
+    //ctx.drawImage(this.waterCanvas, 0, 0);
+    ctx.globalAlpha = this.alpha;
     for (let i = 0; i < steps; i++) {
       let h = (height * (1 - WaterMark)) / steps;
       ctx.drawImage(
@@ -434,7 +468,7 @@ var WaterLayer = {
         i * h,
         width,
         h,
-        Math.sin(i * 2 + animTicks / 10) * ((6 * i) / steps) +
+        Math.sin(i * 2 + animTicks / 10) * (1+(6 * i) / steps) +
           ((15 * (i * i)) / (steps * steps)) *
             Math.sin(i / 10 + animTicks / 30),
         height * WaterMark + i * h,
@@ -442,6 +476,7 @@ var WaterLayer = {
         h
       );
     }
+    ctx.globalAlpha = 1;
   }
 };
 
@@ -621,15 +656,16 @@ CanvasLayer.setDayCycle(1);
   {//el.addEventListener("click", () => {
     //document.getElementById("intro-container").style.display = "none";
 
-    CanvasLayer.addLayer(SkyLayer);
-    CanvasLayer.addLayer(StarLayer);
-    CanvasLayer.addLayer(NorthernLights);
-    CanvasLayer.addLayer(CloudLayer);
-    CanvasLayer.addLayer(SnowLayer);
-    CanvasLayer.addLayer(WaterLayer);
-    CanvasLayer.addLayer(CityLayer);
-    CanvasLayer.addLayer(SnowLayer2);
-    CanvasLayer.addLayer(BlackOverlay);
+    CanvasLayer.addLayer(SkyLayer, "Sky");
+    CanvasLayer.addLayer(StarLayer, "Stars");
+    CanvasLayer.addLayer(NorthernLights, "Northern Lights");
+    CanvasLayer.addLayer(CloudLayer, "Clouds");
+    CanvasLayer.addLayer(SnowLayer, "Snow");
+    CanvasLayer.addLayer(WaterLayer, "Water");
+    CanvasLayer.addLayer(CityLayer, "City");
+    CanvasLayer.addLayer(CopyLayer, "Copy Layer");
+    CanvasLayer.addLayer(SnowLayer2, "Snow 2");
+    CanvasLayer.addLayer(BlackOverlay, "Black Overlay");
 
     //CanvasLayer.setDayCycle(1);
     StoryBoard.initialize();
