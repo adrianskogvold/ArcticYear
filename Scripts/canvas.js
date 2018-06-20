@@ -190,19 +190,14 @@ var CloudLayer = {
 
 var CityLayer = {
   initialize: function(canvasLayer) {
-    const blueFilter =  "sepia(100%) hue-rotate(190deg) brightness(100%) saturate(100%)";
-    this.city = canvasLayer.loadImageFiltered("./Images/CityWithRoadCutout.png", blueFilter);
-    this.nightCity = canvasLayer.loadImageFiltered(
-      "./Images/CityWithRoadCutout.png",
-      "sepia(100%) hue-rotate(180deg) brightness(75%) saturate(300%)"
-    );
-    this.tromsdalstin = canvasLayer.loadImageFiltered("./Images/Tromsdalstin.png", blueFilter);
-    this.floya = canvasLayer.loadImageFiltered("./Images/Floya.png", blueFilter);
-    this.nordFjellet = canvasLayer.loadImageFiltered("./Images/NordFjellet.png", blueFilter);
+    this.city = canvasLayer.loadImage("./Images/CityWithRoadCutout.png");
+    this.tromsdalstin = canvasLayer.loadImage("./Images/Tromsdalstin.png");
+    this.floya = canvasLayer.loadImage("./Images/Floya.png");
+    this.nordFjellet = canvasLayer.loadImage("./Images/NordFjellet.png");
   },
   paint: function(ctx, width, height) {
     let h = width * this.city.ratio;
-    //  ctx.filter = ;
+    ctx.filter =  `sepia(100%) hue-rotate(${this.hueRotate * 360}deg) brightness(100%) saturate(100%)`; 
     // const t = Math.sin(animTicks/100); // For parallaxing
     const t = 0;
     const yPosition = height * WaterMark * 1.03 - h;
@@ -258,7 +253,7 @@ const SunLayer = {
         if (this.doomsize < 20){
           this.doomsize = width/2;
         }
-        ctx.globalAlpha = 0.98;
+        ctx.globalAlpha = this.alpha;
         let sunsize= this.doomsize;
         let c = this.sun;
         let x = (width/2) - (sunsize/2);
@@ -267,7 +262,7 @@ const SunLayer = {
         this.doomsize = this.doomsize * this.doomsizeMultiplier;
     } 
     else  {
-      ctx.globalAlpha = 0.8;
+      ctx.globalAlpha = this.alpha;
       let sunsize= width/4;
       let c = this.sun;
       let x = width - (sunsize/2) ;
@@ -289,6 +284,7 @@ const pointColors = ["rgb(255, 255, 255)"];
 
 const StarLayer = {
   stars: [],
+  previousWidth: 1,
   initialize: function(canvasLayer) {
     let starCount = 100;
     for (let i = 0; i < starCount; i++) {
@@ -303,8 +299,12 @@ const StarLayer = {
   },
 
   paint: function(ctx, width, height) {
-    //ctx.clearRect(0, 0, width, height);
     for (i in this.stars) {
+      if(this.previousWidth != 1 && this.previousWidth != width){
+        this.stars = [];
+        this.initialize();
+      }
+      this.previousWidth = width;
       ctx.fillStyle = pointColors[(i * 17) % pointColors.length];
       ctx.font = starsizes[Math.floor(Math.random() * starsizes.length)];
       let x = this.stars[i].x + 0.3;
