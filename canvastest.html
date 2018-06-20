@@ -22,7 +22,7 @@
             left: 0;
             z-index: 1;
         }
-        #main {
+        #main,  #main-texture {
             width: 97%;
             height: 97%;
             border-radius: 15px;
@@ -31,22 +31,44 @@
             top: 50%;
             transform: translate(-50%, -50%);
             z-index: 1;
-            border: 1px solid #fff;
+            /* border: 1px solid #fff; */
+        }
+        #main-texture {
+            overflow: hidden;
+            opacity: 0.1;
+            z-index: 2;
+        }
+        #main-texture:after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            box-shadow: inset 0px 0px 350px black;
         }
 
         #audio-control {
             display: none;
         }
+        #debuginfo {
+            position: absolute;
+            left:0px;
+            top:0px;
+            width: 300px;
+            background-color: rgba(0, 0, 0, 1);
+            color: #fff;
+            z-index: 100;
+            font-family: 'sans-serif';
+        }
         #season-label {
             font-family: "jabin";
             position: absolute;
-            top: 85%;
-            font-size: 80px;
+            top: 80%;
+            font-size: 3em;
             color: #FFF;
             z-index: 2;
             left: 50%;
             transform: translateX(-50%);
             font-variation-settings: 'wght' 70, 'XXXX' 100;
+            text-shadow: 2px 2px 2px #ff0000;
         }
         </style>
         <script type="text/javascript">
@@ -72,8 +94,12 @@
         <div id="main-container">
             <div id="season-label">
                 Winter
-            </div>
+            </div> 
             <canvas id="main"></canvas>
+            <div id="debuginfo"></div>
+            <div id="main-texture">
+                <img src="images/oldPaper.jpg"/>
+            </div>
         </div>
 
         <div id="audio-control">
