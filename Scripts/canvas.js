@@ -175,14 +175,15 @@ var CloudLayer = {
 
 var CityLayer = {
   initialize: function(canvasLayer) {
-    this.city = canvasLayer.loadImage("./Images/CityWithRoadCutout.png");
+    const blueFilter =  "sepia(100%) hue-rotate(190deg) brightness(100%) saturate(100%)";
+    this.city = canvasLayer.loadImageFiltered("./Images/CityWithRoadCutout.png", blueFilter);
     this.nightCity = canvasLayer.loadImageFiltered(
       "./Images/CityWithRoadCutout.png",
       "sepia(100%) hue-rotate(180deg) brightness(75%) saturate(300%)"
     );
-    this.tromsdalstin = canvasLayer.loadImage("./Images/Tromsdalstin.png");
-    this.floya = canvasLayer.loadImage("./Images/Floya.png");
-    this.nordFjellet = canvasLayer.loadImage("./Images/NordFjellet.png");
+    this.tromsdalstin = canvasLayer.loadImageFiltered("./Images/Tromsdalstin.png", blueFilter);
+    this.floya = canvasLayer.loadImageFiltered("./Images/Floya.png", blueFilter);
+    this.nordFjellet = canvasLayer.loadImageFiltered("./Images/NordFjellet.png", blueFilter);
   },
   paint: function(ctx, width, height) {
     let h = width * this.city.ratio;
@@ -190,7 +191,7 @@ var CityLayer = {
     // const t = Math.sin(animTicks/100); // For parallaxing
     const t = 0;
     const yPosition = height * WaterMark - h;
-    const drawnWidth = width * 1.05;
+    const drawnWidth = width * 1.02;
     const deltaWidth = (drawnWidth - width) / 2;
     const drawnHeight = h * 1.05;
     ctx.drawImage(
@@ -454,6 +455,27 @@ var WaterLayer = {
   }
 };
 
+// const PaperTexture = {
+//   initialize: function(canvasLayer) {
+//     this.oldPaper = canvasLayer.loadImageFiltered("./Images/oldPaper.jpg", "grayscale(100%), invert(100%)");
+//   },
+//   paint: function(ctx, width, height) {
+//     ctx.globalAlpha = 015;
+//     // ctx.globalCompositeOperation = "color-burn";
+//     ctx.drawImage(this.oldPaper, 0, 0);
+//     ctx.globalAlpha = 1;
+
+//     debugger;
+//     var grd=ctx.createRadialGradient(width/2,height/2,1,height,width,width/2);
+//     grd.addColorStop(0, "rgba(255, 255, 255, 0.5)");
+//     grd.addColorStop(1, "rgba(0, 0, 0, 0.5)");
+
+//     // Fill with gradient
+//     ctx.fillStyle=grd;
+//     ctx.fillRect(0,0,width,height);
+//   }
+// }
+
 var NorthernLights = {
   initialize: function(canvasLayer) {
     this.canvas = document.createElement("canvas");
@@ -625,6 +647,7 @@ CanvasLayer.setDayCycle(1);
     CanvasLayer.addLayer(WaterLayer);
     CanvasLayer.addLayer(CityLayer);
     CanvasLayer.addLayer(SnowLayer2);
+    // CanvasLayer.addLayer(PaperTexture);
 
     CanvasLayer.setDayCycle(1);
     CanvasLayer.initialize("main");
