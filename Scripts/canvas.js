@@ -151,13 +151,15 @@ var SkyLayer = {
   }
 };
 
+function smoothstep(x) { return 3*x*x - 2*x*x*x; }
+
 var CloudLayer = {
   clouds: [],
   cloudAlpha: 1,
   initialize: function(canvasLayer) {
-    this.cloud1 = canvasLayer.loadImage("./Images/cloud1.png");
-    this.cloud2 = canvasLayer.loadImage("./Images/cloud2.png");
-    for (let i = 0; i < 3; i++) {
+    this.cloud1 = canvasLayer.loadImageFiltered("./Images/cloud1.png");
+    this.cloud2 = canvasLayer.loadImageFiltered("./Images/cloud2.png");
+    for (let i = 0; i < 36; i++) {
       this.clouds.push({
         x: Math.random(),
         y: Math.random() * 0.5,
@@ -168,12 +170,16 @@ var CloudLayer = {
     return this;
   },
   paint: function(ctx, width, height) {
-    ctx.globalAlpha = this.cloudAlpha;
+    ctx.globalAlpha = 1;
     for (let i = 0; i < this.clouds.length; i++) {
       let c = this.clouds[i];
       let w = width * c.size;
       let h = w * c.image.ratio;
       let x = c.x * width - w / 2 + 500 * Math.sin(animTicks / 1000 + i / 2);
+      if(this.cloudAlpha < 1) {
+        let outx = c.x>0.5 ?  (width + w) : - (width + w);
+        x = outx + (x - outx) * smoothstep(Math.min(1, this.cloudAlpha * (1 + i/60)));
+      }
       let y = c.y * height - h / 2;
       ctx.drawImage(c.image, x, y, w, h);
     }
@@ -184,15 +190,13 @@ var CloudLayer = {
   }
 };
 
-var CityLayer = {
+var MountainLayer = {
   initialize: function(canvasLayer) {
-    this.city = canvasLayer.loadImage("./Images/CityWithRoadCutout.png");
     this.tromsdalstin = canvasLayer.loadImage("./Images/Tromsdalstin.png");
-    this.floya = canvasLayer.loadImage("./Images/Floya.png");
-    this.nordFjellet = canvasLayer.loadImage("./Images/NordFjellet.png");
   },
   paint: function(ctx, width, height) {
-    let h = width * this.city.ratio;
+    ctx.globalAlpha = 1;
+    let h = width * this.tromsdalstin.ratio;
     ctx.filter =  `sepia(100%) hue-rotate(${this.hueRotate * 360}deg) brightness(100%) saturate(100%)`; 
     // const t = Math.sin(animTicks/100); // For parallaxing
     const t = 0;
@@ -207,6 +211,32 @@ var CityLayer = {
       drawnWidth,
       drawnHeight
     );
+  }
+};
+
+var CityLayer = {
+  initialize: function(canvasLayer) {
+    this.city = canvasLayer.loadImage("./Images/CityWithRoadCutout.png");
+    this.floya = canvasLayer.loadImage("./Images/Floya.png");
+    this.nordFjellet = canvasLayer.loadImage("./Images/NordFjellet.png");
+  },
+  paint: function(ctx, width, height) {
+    let h = width * this.city.ratio;
+    ctx.filter =  `sepia(100%) hue-rotate(${this.hueRotate * 360}deg) brightness(100%) saturate(100%)`; 
+    // const t = Math.sin(animTicks/100); // For parallaxing
+    const t = 0;
+    const yPosition = height * WaterMark * 1.03 - h;
+    const drawnWidth = width * 1.02;
+    const deltaWidth = (drawnWidth - width) / 2;
+    const drawnHeight = h * 1.05;
+    /*
+    ctx.drawImage(
+      this.tromsdalstin,
+      t * 15 - deltaWidth,
+      yPosition,
+      drawnWidth,
+      drawnHeight
+    );*/
     ctx.drawImage(
       this.nordFjellet,
       t * 20 - deltaWidth,
@@ -273,18 +303,18 @@ const SunLayer = {
   }
 }
 
-const starTypes = ["✵", "✴", "✦", "✸"];
-const starsizes = ["5px Arial", "6px Arial"];
-const screensize = window.innerWidth;
+//const starTypes = ["✵", "✴", "✦", "✸"];
+//const starsizes = ["5px Arial"];
 const pointColors = ["rgb(255, 255, 255)"];
+const pointSizes = [1,2];
 
 const StarLayer = {
   stars: [],
-  previousWidth: 1,
+  width: window.innerWidth,
   initialize: function(canvasLayer) {
     let starCount = 100;
     for (let i = 0; i < starCount; i++) {
-      let x = Math.ceil(Math.random() * screensize);
+      let x = Math.ceil(Math.random() * this.width);
       let y = Math.ceil(Math.random() * 800) - 200;
       let star = {
         x,
@@ -297,14 +327,14 @@ const StarLayer = {
 
   paint: function(ctx, width, height) {
     ctx.globalAlpha = this.alpha;
+    if( this.width != width){
+      this.stars = [];
+      this.width = width;
+      this.initialize();
+    }
     for (i in this.stars) {
-      if(this.previousWidth != 1 && this.previousWidth != width){
-        this.stars = [];
-        this.initialize();
-      }
-      this.previousWidth = width;
-      ctx.fillStyle = pointColors[(i * 17) % pointColors.length];
-      ctx.font = starsizes[Math.floor(Math.random() * starsizes.length)];
+      ctx.fillStyle = pointColors[(i) % pointColors.length];
+      //ctx.font = starsizes[Math.floor(Math.random() * starsizes.length)];
       let x = this.stars[i].x + 0.3;
       let t = Math.sin((x / width) * Math.PI);
       let ydirection = -1;
@@ -312,18 +342,15 @@ const StarLayer = {
         x = 0;
         this.stars[i].y = Math.ceil(Math.random() * 800) - 200;
       }
-      if (x > screensize / 2) {
+      if (x > width / 2) {
         ydirection = 1;
       }
-      let curvesize = 0.2 * (1 - t);
+      let curvesize = 0.3 * (1 - t);
       this.stars[i].x = x;
       this.stars[i].y = this.stars[i].y + curvesize * ydirection;
       ctx.beginPath();
-      ctx.fillText(
-        starTypes[i % starTypes.length],
-        this.stars[i].x,
-        this.stars[i].y
-      );
+      ctx.arc(this.stars[i].x, this.stars[i].y, pointSizes[i % pointSizes.length], 0, 2 * Math.PI);
+
       ctx.fill();
       ctx.closePath();
     }
@@ -465,7 +492,7 @@ var WaterLayer = {
   },
   paintWater: function(ctx, width, height) {
     ctx.globalAlpha = 0.2;
-    ctx.scale(1, -0.33);
+    ctx.scale(0.5, -0.5*0.33);
     ctx.drawImage(
       CopyLayer.canvas, //this.city,
       0,
@@ -486,7 +513,7 @@ var WaterLayer = {
   },
   paint: function(ctx, width, height) {
     if(this.alpha <= 0) return;
-    this.waterCanvas.width = width;
+    this.waterCanvas.width = width * 0.5;
     this.waterCanvas.height = height * (1 - WaterMark);
     this.paintWater(
       this.waterCanvas.getContext("2d"),
@@ -504,9 +531,9 @@ var WaterLayer = {
       ctx.drawImage(
         this.waterCanvas,
         0,
-        i * h,
-        width,
-        h,
+        i * h * 0.5,
+        width * 0.5,
+        h * 0.5,
         Math.sin(i * 2 + animTicks / 10) * (1+(6 * i) / steps) +
           ((15 * (i * i)) / (steps * steps)) *
             Math.sin(i / 10 + animTicks / 30),
@@ -550,14 +577,14 @@ var NorthernLights = {
       //{x: 0.1, y:0.1},
       { x: 0.6, y: 0.4 },
       { x: 0.5, y: 0.7 },
-      { x: 1.0, y: 0.8 }
+      { x: 1.0, y: 1.0 }
     ];
     this.globalAlpha = 0;
   },
   paintLight: function(ctx, width, height) {
     let points = this.points;
     ctx.globalAlpha = 0.5;
-    ctx.lineWidth = 14;
+    ctx.lineWidth = 10;
     ctx.clearRect(0, 0, width, height);
     ctx.strokeStyle = "rgba(255, 255, 0, 0.15)";
     ctx.save();
@@ -582,8 +609,8 @@ var NorthernLights = {
     ctx.stroke();
 
     // Second Northern Light
-    ctx.translate(40, 20);
-    ctx.strokeStyle = "rgba(255, 128, 255, 0.15)";
+    ctx.translate(40, 50);
+    ctx.strokeStyle = "rgba(0, 255, 0, 0.15)";
     ctx.beginPath();
     ctx.moveTo(points[0].x * width, points[0].y * height);
     for (i = 1; i < points.length - 2; i++) {
@@ -630,24 +657,25 @@ var NorthernLights = {
     ctx.drawImage(this.canvas, 0, 0);
     ctx.globalAlpha =
       0.45 + 0.1 * Math.sin(Math.sin(animTicks / 1000) + animTicks / 100);
-    for (let i = 7; i >= 0; i--) {
+    for (let i = 10; i >= 0; i--) {
       ctx.drawImage(
         this.canvas2,
         3 * Math.sin(i * 9 + animTicks / 1000),
-        -3 - i * 1.55
+        -3 - i * 1.65
       );
     }
   },
   paint: function(ctx, width, height) {
-    if (this.canvas.width != width) {
-      this.canvas.width = width;
-      this.canvas.height = height * 0.5;
-      this.canvas2.width = width;
-      this.canvas2.height = height * 0.5;
+    if(this.alpha <=0 ) return;
+    if (this.canvas.width != width * 0.5) {
+      this.canvas.width = width * 0.5;
+      this.canvas.height = height * 0.25;
+      this.canvas2.width = width * 0.5;
+      this.canvas2.height = height * 0.25;
     }
     for (let i = 0; i < this.points.length - 1; i++) {
       this.points[i].x += Math.sin(animTicks / 30 + i * 82) * 0.0001;
-      this.points[i].y = 0.5 + 0.35 * Math.sin(animTicks / 300 + i * 4);
+      this.points[i].y = 0.6 + 0.35 * Math.sin(animTicks / 300 + i * 4);
     }
     this.paintLight(
       this.canvas.getContext("2d"),
@@ -660,7 +688,7 @@ var NorthernLights = {
       this.canvas2.height
     );
     ctx.globalAlpha = this.alpha * this.alpha * 0.6;
-    ctx.drawImage(this.canvas2, 0, 0);
+    ctx.drawImage(this.canvas2, 0, 0, width * 0.5, width * 0.25, 0, 0, width, height * 0.5);
   },
   setDayCycle: function(value) {
     this.alpha = value;
@@ -719,12 +747,13 @@ CanvasLayer.setDayCycle(1);
     CanvasLayer.addLayer(SkyLayer, "Sky");
     CanvasLayer.addLayer(StarLayer, "Stars");
     CanvasLayer.addLayer(NorthernLights, "Northern Lights");
+    CanvasLayer.addLayer(MountainLayer, "Mountain");
     CanvasLayer.addLayer(CloudLayer, "Clouds");
-    CanvasLayer.addLayer(SnowLayer, "Snow");
+    //CanvasLayer.addLayer(SnowLayer, "Snow");
     CanvasLayer.addLayer(WaterLayer, "Water");
     CanvasLayer.addLayer(CityLayer, "City");
     CanvasLayer.addLayer(CopyLayer, "Copy Layer");
-    CanvasLayer.addLayer(SnowLayer2, "Snow 2");
+    //CanvasLayer.addLayer(SnowLayer2, "Snow 2");
     CanvasLayer.addLayer(BlackOverlay, "Black Overlay");
 
     //CanvasLayer.setDayCycle(1);
