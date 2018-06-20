@@ -32,7 +32,7 @@ var StoryBoard = {
             stars: 0,
             cityFilter: 1,
             clouds: 0,
-            waterReflections: 0,
+            waterReflections: 1,
             snow: 0,
             northernLights: 0,
             duration: 1000,
@@ -84,7 +84,7 @@ var StoryBoard = {
         // 4
         {
             clouds: 1,
-            duration: 1000
+            duration: 5000
         },
         // 5
         {
@@ -99,13 +99,13 @@ var StoryBoard = {
             clouds: 0,
             snow: 0,
             northernLights: 1,            
-            duration: 1000
+            duration: 5000
         },
         // 7
         {
             //northernLights: 1,
             blackOverlay: 0,
-            duration: 5000
+            duration: 10000
         },
         // 8 (transform to summer)
         {
