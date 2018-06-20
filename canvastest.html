@@ -4,6 +4,7 @@
         <title>CANVAS CITY</title>
         <meta charset="UTF-8" />
         <link rel = "stylesheet" type = "text/css" href = "Styles/canvas.css" />
+        <link rel = "stylesheet" type = "text/css" href = "Styles/intro.css" />
         <style>
         html,body {
             width: 100%;
@@ -11,16 +12,58 @@
             overflow: hidden;
             padding: 0px;
             margin: 0px;
-            background-color: #000;
+            background-color: #151A2C;
         }
-        #main {
+        #main-container, #main {
             width: 100%;
             height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        #audio-control {
+            display: none;
+        }
+        #season-label {
+            font-family: "jabin";
+            position: absolute;
+            top: 85%;
+            font-size: 80px;
+            color: #FFF;
+            z-index: 2;
+            left: 50%;
+            transform: translateX(-50%);
+            font-variation-settings: 'wght' 70, 'XXXX' 100;
         }
         </style>
+        <script type="text/javascript">
+
+        </script>
         <script src="./Scripts/canvas.js" ></script>
     </head>
-<body onload="CanvasLayer.initialize('main')">
-    <canvas id="main"></canvas>
-</body>
+    <body>
+        <div id="intro-container">
+            <div id="intro">• One Year&hairsp;in Tromsø •</div>
+        
+            <div id="intro-description">As migrants to this city, we pay homage to the changing seasons in this series of interactive postcards.
+                This experience is best viewed in Chrome due to the use of experimental web technologies.
+            </div> 
+
+            <div id="entry">
+                <button id="entry-button">enter</button>
+            </div>
+        </div>
+
+        <div id="main-container">
+            <div id="season-label">
+                Winter
+            </div>
+            <canvas id="main"></canvas>
+        </div>
+
+        <div id="audio-control">
+            <audio src="sounds/win95startup.mp3" loop autoplay controls></audio>
+        </div>
+    </body>
 </html>
