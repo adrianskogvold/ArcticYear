@@ -1,4 +1,3 @@
-
 const SUMMER = 0;
 const WINTER = 1;
 
@@ -32,7 +31,7 @@ var CanvasLayer = {
   layers: [],
   images: [],
   imagesLoaded: 0,
-  // returns an Image() object with an image 
+  // returns an Image() object with an image
   loadImage: function(url) {
     for (let i = 0; i < this.images.length; i++) {
       if (this.images[i].src == url) return this.images[i];
@@ -59,7 +58,10 @@ var CanvasLayer = {
       ctx.filter = filter;
       ctx.drawImage(img, 0, 0);
     };
-    img.onload = () => { result.applyFilter(filter); CanvasLayer.imageLoaded(result); };
+    img.onload = () => {
+      result.applyFilter(filter);
+      CanvasLayer.imageLoaded(result);
+    };
     this.images.push(result);
     return result;
   },
@@ -81,7 +83,7 @@ var CanvasLayer = {
       ctx.fillRect(
         0,
         height / 2 - 10,
-        this.imagesLoaded * width / Math.max(1, this.images.length),
+        (this.imagesLoaded * width) / Math.max(1, this.images.length),
         height / 2 + 20
       );
       return;
@@ -99,7 +101,7 @@ var CanvasLayer = {
     this.layers.push(layer);
     layer.initialize(this);
   },
-  // signals the day cycle (0 = day, 1 = night) to all layers 
+  // signals the day cycle (0 = day, 1 = night) to all layers
   setDayCycle: function(value) {
     for (let i = 0; i < this.layers.length; i++)
       if (this.layers[i].setDayCycle) this.layers[i].setDayCycle(value);
@@ -142,11 +144,11 @@ var CloudLayer = {
   initialize: function(canvasLayer) {
     this.cloud1 = canvasLayer.loadImage("./Images/cloud1.png");
     this.cloud2 = canvasLayer.loadImage("./Images/cloud2.png");
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 3; i++) {
       this.clouds.push({
         x: Math.random(),
         y: Math.random() * 0.5,
-        image: this["cloud" + (1 + i % 2)],
+        image: this["cloud" + (1 + (i % 2))],
         size: 0.25 + Math.random() * 0.1
       });
     }
@@ -172,7 +174,10 @@ var CloudLayer = {
 var CityLayer = {
   initialize: function(canvasLayer) {
     this.city = canvasLayer.loadImage("./Images/CityWithRoadCutout.png");
-    this.nightCity = canvasLayer.loadImageFiltered("./Images/CityWithRoadCutout.png", "sepia(100%) hue-rotate(180deg) brightness(75%) saturate(300%)");
+    this.nightCity = canvasLayer.loadImageFiltered(
+      "./Images/CityWithRoadCutout.png",
+      "sepia(100%) hue-rotate(180deg) brightness(75%) saturate(300%)"
+    );
     this.tromsdalstin = canvasLayer.loadImage("./Images/Tromsdalstin.png");
     this.floya = canvasLayer.loadImage("./Images/Floya.png");
     this.nordFjellet = canvasLayer.loadImage("./Images/NordFjellet.png");
@@ -184,16 +189,93 @@ var CityLayer = {
     const t = 0;
     const yPosition = height * WaterMark - h;
     const drawnWidth = width * 1.05;
-    const deltaWidth = (drawnWidth - width)/2;
+    const deltaWidth = (drawnWidth - width) / 2;
     const drawnHeight = h * 1.05;
-    ctx.drawImage(this.tromsdalstin, t * 15 - deltaWidth, yPosition, drawnWidth, drawnHeight);
-    ctx.drawImage(this.nordFjellet, t * 20 - deltaWidth, yPosition, drawnWidth, drawnHeight);
-    ctx.drawImage(this.floya, t * 25 - deltaWidth, yPosition, drawnWidth, drawnHeight);
-    ctx.drawImage(this.city, t * 35 - deltaWidth, yPosition, drawnWidth, drawnHeight);
+    ctx.drawImage(
+      this.tromsdalstin,
+      t * 15 - deltaWidth,
+      yPosition,
+      drawnWidth,
+      drawnHeight
+    );
+    ctx.drawImage(
+      this.nordFjellet,
+      t * 20 - deltaWidth,
+      yPosition,
+      drawnWidth,
+      drawnHeight
+    );
+    ctx.drawImage(
+      this.floya,
+      t * 25 - deltaWidth,
+      yPosition,
+      drawnWidth,
+      drawnHeight
+    );
+    ctx.drawImage(
+      this.city,
+      t * 35 - deltaWidth,
+      yPosition,
+      drawnWidth,
+      drawnHeight
+    );
     ctx.globalAlpha = this.nightAlpha;
     // ctx.drawImage(this.nightCity, 0, height - h, width, h);
     ctx.globalAlpha = 1;
-  },  
+  },
+  setDayCycle: function(value) {
+    this.nightAlpha = value;
+  }
+};
+
+const starTypes = ["✵", "✴", "✦", "✸"];
+const starsizes = ["5px Arial", "6px Arial"];
+const screensize = window.innerWidth;
+const pointColors = ["rgb(255, 255, 255)"];
+
+const StarLayer = {
+  stars: [],
+  initialize: function(canvasLayer) {
+    let starCount = 100;
+    for (let i = 0; i < starCount; i++) {
+      let x = Math.ceil(Math.random() * screensize);
+      let y = Math.ceil(Math.random() * 800) - 200;
+      let star = {
+        x,
+        y
+      };
+      this.stars.push(star);
+    }
+  },
+
+  paint: function(ctx, width, height) {
+    ctx.clearRect(0, 0, width, height);
+    for (i in this.stars) {
+      ctx.fillStyle = pointColors[(i * 17) % pointColors.length];
+      ctx.font = starsizes[Math.floor(Math.random() * starsizes.length)];
+      let x = this.stars[i].x + 0.3;
+      let t = Math.sin((x / width) * Math.PI);
+      let ydirection = -1;
+      if (x > width) {
+        x = 0;
+        this.stars[i].y = Math.ceil(Math.random() * 800) - 200;
+      }
+      if (x > screensize / 2) {
+        ydirection = 1;
+      }
+      let curvesize = 0.2 * (1 - t);
+      this.stars[i].x = x;
+      this.stars[i].y = this.stars[i].y + curvesize * ydirection;
+      ctx.beginPath();
+      ctx.fillText(
+        starTypes[i % starTypes.length],
+        this.stars[i].x,
+        this.stars[i].y
+      );
+      ctx.fill();
+      ctx.closePath();
+    }
+  },
   setDayCycle: function(value) {
     this.nightAlpha = value;
   }
@@ -217,7 +299,7 @@ var SnowLayer = {
     if (this.alpha == 0) return;
     ctx.fillStyle = "#fff";
     ctx.font = "16px jabin";
-    const flakes = ['•'];
+    const flakes = ["•"];
     ctx.globalAlpha = this.alpha;
     for (let i = 0; i < this.snow.length; i++) {
       let f = this.snow[i];
@@ -225,14 +307,17 @@ var SnowLayer = {
       f.speedX += Math.random() * 0.0001 - 0.00005;
       f.x += f.speedX * f.z;
       f.y += f.speedY * f.z;
-      //ctx.beginPath();
+      ctx.beginPath();
       ctx.arc(f.x * width, f.y * height, 5 * (0.1 + f.z), 0, 2 * Math.PI);
+      //ctx.endPath();
+      ctx.fill();
       if (f.y > WaterMark) {
         f.y = -0.05;
         f.speedX = 0;
         f.speedY = 0.001;
       }
-      ctx.fillText(".", f.x * width, f.y * height);
+      // ctx.arc(f.x * width, f.y * height, 1, 0, Math.PI * 2);
+      // ctx.fillText(".", f.x * width, f.y * height);
     }
     ctx.globalAlpha = 1;
   },
@@ -259,7 +344,7 @@ var SnowLayer2 = {
     if (this.alpha == 0) return;
     ctx.fillStyle = "#fff";
     ctx.font = "24px jabin";
-    const flakes = ['•'];
+    const flakes = ["•"];
     ctx.globalAlpha = this.alpha;
     for (let i = 0; i < this.snow.length; i++) {
       let f = this.snow[i];
@@ -267,14 +352,17 @@ var SnowLayer2 = {
       f.speedX += Math.random() * 0.0001 - 0.00005;
       f.x += f.speedX * f.z;
       f.y += f.speedY * f.z;
-      //ctx.beginPath();
+      ctx.beginPath();
       ctx.arc(f.x * width, f.y * height, 5 * (0.1 + f.z), 0, 2 * Math.PI);
       if (f.y > 1.05) {
         f.y = -0.05;
         f.speedX = 0;
         f.speedY = 0.001;
       }
-      ctx.fillText("*", f.x * width, f.y * height);
+      ctx.closePath();
+      ctx.fill();
+      // ctx.arc(x, y, 1, 0, Math.PI * 2);
+      // ctx.fillText("*", f.x * width, f.y * height);
     }
     ctx.globalAlpha = 1;
   },
@@ -282,7 +370,6 @@ var SnowLayer2 = {
     this.alpha = value;
   }
 };
-
 
 // TODO Move this water layer upwards to meet the mountain layer; note the offset
 var WaterLayer = {
@@ -298,36 +385,69 @@ var WaterLayer = {
     grad.addColorStop(0.5, color + "0.25)");
     grad.addColorStop(1, color + "0)");
     //grad.addColorStop(0.75, "rgba(255, 255, 255, 0.05)");
-    
+
     grad.addColorStop(1, "rgba(255, 255, 255, 0)");
     ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.arc(x, Math.max(0, y) + width / 2, width / 2, 0, Math.PI * 2);
-    ctx.rect(x - width/2, Math.max(0,y) + width / 2, width, reflectionLength);
+    ctx.rect(
+      x - width / 2,
+      Math.max(0, y) + width / 2,
+      width,
+      reflectionLength
+    );
     ctx.closePath();
     ctx.fill();
   },
   paintWater: function(ctx, width, height) {
     ctx.globalAlpha = 0.25;
     ctx.scale(1, -0.5);
-    ctx.drawImage(this.city, 0, -width * this.city.ratio, width, width * this.city.ratio);
-    ctx.scale(1, -1/0.5);
+    ctx.drawImage(
+      this.city,
+      0,
+      -width * this.city.ratio,
+      width,
+      width * this.city.ratio
+    );
+    ctx.scale(1, -1 / 0.5);
     ctx.globalAlpha = 1;
-    for(let i=0; i < 50; i++) {
-      this.fakeReflection(ctx, i * width / 50 + 50 * Math.sin(i/ 2 + animTicks/500), 0, 10, "rgb(255, 255, 255)");
-    }  
+    for (let i = 0; i < 50; i++) {
+      this.fakeReflection(
+        ctx,
+        (i * width) / 50 + 50 * Math.sin(i / 2 + animTicks / 500),
+        0,
+        10,
+        "rgb(255, 255, 255)"
+      );
+    }
   },
   paint: function(ctx, width, height) {
     this.waterCanvas.width = width;
     this.waterCanvas.height = height * (1 - WaterMark);
-    this.paintWater(this.waterCanvas.getContext("2d"), this.waterCanvas.width, this.waterCanvas.height);
+    this.paintWater(
+      this.waterCanvas.getContext("2d"),
+      this.waterCanvas.width,
+      this.waterCanvas.height
+    );
 
     // Draw sliced image onto the canvas
     // Start at 0?
     let steps = 150;
-    for(let i=0; i < steps; i++) {
-      let h = height * (1 - WaterMark) / steps;
-      ctx.drawImage(this.waterCanvas, 0, i * h, width, h, Math.sin(i*2 + animTicks / 10) * (6*i/steps) + (15 * (i*i)/(steps*steps)) * Math.sin(i/10 + animTicks / 30), height * WaterMark + i * h, width, h);
+    for (let i = 0; i < steps; i++) {
+      let h = (height * (1 - WaterMark)) / steps;
+      ctx.drawImage(
+        this.waterCanvas,
+        0,
+        i * h,
+        width,
+        h,
+        Math.sin(i * 2 + animTicks / 10) * ((6 * i) / steps) +
+          ((15 * (i * i)) / (steps * steps)) *
+            Math.sin(i / 10 + animTicks / 30),
+        height * WaterMark + i * h,
+        width,
+        h
+      );
     }
   }
 };
@@ -337,12 +457,12 @@ var NorthernLights = {
     this.canvas = document.createElement("canvas");
     this.canvas2 = document.createElement("canvas");
     this.points = [
-      {x: -0.1, y:0.25},
-      {x: 0.4, y:0.1},
+      { x: -0.1, y: 0.25 },
+      { x: 0.4, y: 0.1 },
       //{x: 0.1, y:0.1},
-      {x: 0.6, y: 0.4},
-      {x: 0.5, y: 0.7},
-      {x: 1.0, y: 0.8}
+      { x: 0.6, y: 0.4 },
+      { x: 0.5, y: 0.7 },
+      { x: 1.0, y: 0.8 }
     ];
     this.globalAlpha = 0;
   },
@@ -358,14 +478,18 @@ var NorthernLights = {
     ctx.translate(-20, -10);
     ctx.beginPath();
     ctx.moveTo(points[0].x * width, points[0].y * height);
-    for (i = 1; i < points.length - 2; i ++)
-    {
-      var xc = width * (points[i].x + points[i + 1].x) / 2;
-       var yc = height * (points[i].y + points[i + 1].y) / 2;
-       ctx.quadraticCurveTo(points[i].x * width, points[i].y * height, xc, yc);
+    for (i = 1; i < points.length - 2; i++) {
+      var xc = (width * (points[i].x + points[i + 1].x)) / 2;
+      var yc = (height * (points[i].y + points[i + 1].y)) / 2;
+      ctx.quadraticCurveTo(points[i].x * width, points[i].y * height, xc, yc);
     }
     // curve through the last point
-    ctx.quadraticCurveTo(width * points[i].x, height * points[i].y, width * points[i+1].x, height * points[i+1].y);
+    ctx.quadraticCurveTo(
+      width * points[i].x,
+      height * points[i].y,
+      width * points[i + 1].x,
+      height * points[i + 1].y
+    );
     //ctx.closePath();
     ctx.stroke();
 
@@ -374,14 +498,18 @@ var NorthernLights = {
     ctx.strokeStyle = "rgba(255, 128, 255, 0.15)";
     ctx.beginPath();
     ctx.moveTo(points[0].x * width, points[0].y * height);
-    for (i = 1; i < points.length - 2; i ++)
-    {
-      var xc = width * (points[i].x + points[i + 1].x) / 2;
-       var yc = height * (points[i].y + points[i + 1].y) / 2;
-       ctx.quadraticCurveTo(points[i].x * width, points[i].y * height, xc, yc);
+    for (i = 1; i < points.length - 2; i++) {
+      var xc = (width * (points[i].x + points[i + 1].x)) / 2;
+      var yc = (height * (points[i].y + points[i + 1].y)) / 2;
+      ctx.quadraticCurveTo(points[i].x * width, points[i].y * height, xc, yc);
     }
     // curve through the last point
-    ctx.quadraticCurveTo(width * points[i].x, height * points[i].y, width * points[i+1].x, height * points[i+1].y);
+    ctx.quadraticCurveTo(
+      width * points[i].x,
+      height * points[i].y,
+      width * points[i + 1].x,
+      height * points[i + 1].y
+    );
     //ctx.closePath();
     ctx.stroke();
 
@@ -392,15 +520,19 @@ var NorthernLights = {
     // Last Northern Light
     ctx.beginPath();
     ctx.moveTo(points[0].x * width, points[0].y * height);
-    for (i = 1; i < points.length - 2; i ++)
-    {
-       var xc = width * (points[i].x + points[i + 1].x) / 2;
-       var yc = height * (points[i].y + points[i + 1].y) / 2;
-       ctx.quadraticCurveTo(points[i].x * width, points[i].y * height, xc, yc);
+    for (i = 1; i < points.length - 2; i++) {
+      var xc = (width * (points[i].x + points[i + 1].x)) / 2;
+      var yc = (height * (points[i].y + points[i + 1].y)) / 2;
+      ctx.quadraticCurveTo(points[i].x * width, points[i].y * height, xc, yc);
     }
     i = points.length - 2;
     // curve through the last point
-    ctx.quadraticCurveTo(width * points[i].x, height * points[i].y, width * points[i+1].x, height * points[i+1].y);
+    ctx.quadraticCurveTo(
+      width * points[i].x,
+      height * points[i].y,
+      width * points[i + 1].x,
+      height * points[i + 1].y
+    );
     //ctx.closePath();
     ctx.stroke();
   },
@@ -408,31 +540,44 @@ var NorthernLights = {
     ctx.clearRect(0, 0, width, height);
     ctx.globalAlpha = 0.5;
     ctx.drawImage(this.canvas, 0, 0);
-    ctx.globalAlpha = 0.45 + 0.1 * Math.sin(Math.sin(animTicks/1000)+animTicks/100);
-    for(let i=7; i >= 0; i--) {
-    ctx.drawImage(this.canvas2, 3*Math.sin(i*9 + animTicks/1000), -3 - i*1.55);
+    ctx.globalAlpha =
+      0.45 + 0.1 * Math.sin(Math.sin(animTicks / 1000) + animTicks / 100);
+    for (let i = 7; i >= 0; i--) {
+      ctx.drawImage(
+        this.canvas2,
+        3 * Math.sin(i * 9 + animTicks / 1000),
+        -3 - i * 1.55
+      );
     }
   },
   paint: function(ctx, width, height) {
-    if(this.canvas.width != width) {
-    this.canvas.width = width;
-    this.canvas.height = height * 0.5;
-    this.canvas2.width = width;
-    this.canvas2.height = height * 0.5;
+    if (this.canvas.width != width) {
+      this.canvas.width = width;
+      this.canvas.height = height * 0.5;
+      this.canvas2.width = width;
+      this.canvas2.height = height * 0.5;
     }
-    for(let i=0; i < this.points.length-1; i++) {
-      this.points[i].x += Math.sin(animTicks/30 + i*82) * 0.0001;
-      this.points[i].y = 0.5 + 0.35 * Math.sin(animTicks / 300 + i*4);
+    for (let i = 0; i < this.points.length - 1; i++) {
+      this.points[i].x += Math.sin(animTicks / 30 + i * 82) * 0.0001;
+      this.points[i].y = 0.5 + 0.35 * Math.sin(animTicks / 300 + i * 4);
     }
-    this.paintLight(this.canvas.getContext("2d"), this.canvas.width, this.canvas.height);
-    this.paintFx(this.canvas2.getContext("2d"), this.canvas2.width, this.canvas2.height);
+    this.paintLight(
+      this.canvas.getContext("2d"),
+      this.canvas.width,
+      this.canvas.height
+    );
+    this.paintFx(
+      this.canvas2.getContext("2d"),
+      this.canvas2.width,
+      this.canvas2.height
+    );
     ctx.globalAlpha = this.alpha * this.alpha * 0.6;
     ctx.drawImage(this.canvas2, 0, 0);
   },
   setDayCycle: function(value) {
     this.alpha = value;
   }
-}
+};
 
 var BlackOverlay = {
   initialize: function() {},
@@ -454,21 +599,36 @@ function animateProc() {
   window.requestAnimationFrame(animateProc);
 }
 
-
 function ready(fn) {
-  if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
+  if (
+    document.attachEvent
+      ? document.readyState === "complete"
+      : document.readyState !== "loading"
+  ) {
     fn();
   } else {
-    document.addEventListener('DOMContentLoaded', fn);
+    document.addEventListener("DOMContentLoaded", fn);
   }
 }
 
 ready(() => {
+  /*
+CanvasLayer.addLayer(SkyLayer);
+CanvasLayer.addLayer(StarLayer);
+CanvasLayer.addLayer(NorthernLights);
+CanvasLayer.addLayer(CloudLayer);
+CanvasLayer.addLayer(SnowLayer);
+CanvasLayer.addLayer(WaterLayer);
+CanvasLayer.addLayer(CityLayer);
+CanvasLayer.addLayer(SnowLayer2);
+CanvasLayer.setDayCycle(1);
+    CanvasLayer.initialize('main');*/
   const el = document.getElementById("entry-button");
-  el.addEventListener("click", () => { 
-    document.getElementById("intro-container").style.display = 'none';
+  el.addEventListener("click", () => {
+    document.getElementById("intro-container").style.display = "none";
 
     CanvasLayer.addLayer(SkyLayer);
+    CanvasLayer.addLayer(StarLayer);
     CanvasLayer.addLayer(NorthernLights);
     CanvasLayer.addLayer(CloudLayer);
     CanvasLayer.addLayer(SnowLayer);
@@ -478,6 +638,6 @@ ready(() => {
     CanvasLayer.addLayer(BlackOverlay);
 
     CanvasLayer.setDayCycle(1);
-    CanvasLayer.initialize('main');
+    CanvasLayer.initialize("main");
   });
-})
+});
