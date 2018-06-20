@@ -728,6 +728,23 @@ function ready(fn) {
   }
 }
 
+const setScaledCoordsOnImageMap = (scale) => {
+  const nordFjelletCoords = "3,281,248,300,449,327,649,359,689,364,718,373,786,384,935,439,934,449,874,483,761,523,647,540,539,557,459,574,301,567,1,571,-1,457,11,455,-1,356";
+  const tromsdalstindCoords = "661,356,689,327,754,268,900,207,1051,224,1249,269,1217,300,1108,351,1035,369,932,432";
+  const floyaCoords = "1917,32,1802,42,1636,90,1460,185,1305,229,1222,298,1098,359,956,428,857,501,805,516,1476,484,1909,591";
+
+  function createScaledCoordsString(coords) {
+    const splitCharacter = ",";
+    return coords.split(splitCharacter).map((coord) => {
+      return Math.round(coord * scale);
+    }).join(splitCharacter);
+  }
+
+  document.getElementById("nordfjellet").setAttribute("coords", createScaledCoordsString(nordFjelletCoords, scale));
+  document.getElementById("tromsdalstind").setAttribute("coords", createScaledCoordsString(tromsdalstindCoords, scale));
+  document.getElementById("floya").setAttribute("coords", createScaledCoordsString(floyaCoords, scale));
+}
+
 ready(() => {
   /*
 CanvasLayer.addLayer(SkyLayer);
@@ -759,5 +776,17 @@ CanvasLayer.setDayCycle(1);
     //CanvasLayer.setDayCycle(1);
     StoryBoard.initialize();
     CanvasLayer.initialize("main");
+
+    setScaledCoordsOnImageMap(0.5);
   }//);
+
+
+  
+
+  document.getElementById("nordfjellet").addEventListener("mouseenter", ()=> {
+    console.log("entering");
+  });
+  document.getElementById("nordfjellet").addEventListener("mouseleave", ()=> {
+    console.log("leaving");
+  });
 });

@@ -44,6 +44,11 @@
             top: 0; left: 0; bottom: 0; right: 0;
             box-shadow: inset 0px 0px 350px black;
         }
+        #mountain-map {
+            z-index: 4;
+            position: absolute;
+            opacity: 0;
+        }
 
         #audio-control {
             display: none;
@@ -68,7 +73,7 @@
             left: 50%;
             transform: translateX(-50%);
             font-variation-settings: 'wght' 70, 'XXXX' 100;
-            text-shadow: 2px 2px 2px #ff0000;
+            text-shadow: 2px 2px 2px #961919;
         }
         </style>
         <script type="text/javascript">
@@ -95,6 +100,13 @@
             <div id="season-label">
                 Winter
             </div> 
+            <img  id="mountain-map" src="images/TromsoUnsliced.png" usemap="#image-map">
+
+            <map name="image-map">
+                <area target="" id="nordfjellet" title="Nordfjellet" alt="Nordfjellet" href="#" coords="" shape="poly">
+                <area target="" id="tromsdalstind" title="Tromsdalstinden" alt="Tromsdalstinden" href="#" coords="" shape="poly">
+                <area target="" id="floya" alt="Floya" title="Floya" href="#" coords="" shape="poly">
+            </map>
             <canvas id="main"></canvas>
             <div id="debuginfo"></div>
             <div id="main-texture">
