@@ -196,6 +196,52 @@ var CityLayer = {
   }
 };
 
+
+const starTypes = ["✵", "✴", "✦", "✸"];
+const starsizes = ["5px Arial", "6px Arial"]
+const screensize = window.innerWidth;
+const pointColors = ["rgb(255, 255, 255)"];
+
+var StarLayer = {
+    stars: [],
+    initialize: function(canvasLayer) {
+        let starCount = 100;
+        for(let i=0; i<starCount; i++) {
+            let x = Math.ceil(Math.random() * screensize);
+            let y =  Math.ceil(Math.random() * 800) -200;
+            let star = {
+                x,
+                y,
+            }
+            this.stars.push(star);
+        }
+    },
+
+    paint: function(ctx, width, height) {
+        ctx.clearRect(0, 0, width, height);
+        for(i in this.stars) {
+            ctx.fillStyle = pointColors[(i*17) % pointColors.length];
+            ctx.font = starsizes[Math.floor(Math.random() * starsizes.length )];
+            let x = this.stars[i].x + 0.3;
+            let t = Math.sin((x / width) * Math.PI);
+            let ydirection = -1;
+            if (x > width) {
+                x = 0;
+                this.stars[i].y = Math.ceil(Math.random() * 800) -200;
+            }
+            if( x > screensize/2){
+                ydirection = 1;
+            }
+            let curvesize = 0.2 * (1-t);
+            this.stars[i].x = x;
+            this.stars[i].y = this.stars[i].y + (curvesize * ydirection);
+            ctx.fillText(starTypes[i % starTypes.length], this.stars[i].x, this.stars[i].y);
+            ctx.fill();
+            ctx.closePath();
+        }
+    }
+}
+
 var SnowLayer = {
   snow: [],
   initialize: function(canvasLayer) {
@@ -237,6 +283,7 @@ var SnowLayer = {
     this.alpha = value;
   }
 };
+
 
 var SnowLayer2 = {
   snow: [],
@@ -429,6 +476,7 @@ var NorthernLights = {
 }
 
 CanvasLayer.addLayer(SkyLayer);
+CanvasLayer.addLayer(StarLayer);
 CanvasLayer.addLayer(NorthernLights);
 CanvasLayer.addLayer(CloudLayer);
 CanvasLayer.addLayer(SnowLayer);
