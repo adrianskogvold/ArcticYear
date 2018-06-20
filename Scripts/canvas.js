@@ -241,6 +241,42 @@ var CityLayer = {
   }
 };
 
+const SunLayer = {
+  doomsun: false,
+  doomsizeMultiplier: 1.0005,
+  doomsize: 1,
+  initialize: function(canvasLayer) {
+    this.sun = this.doomsun ? canvasLayer.loadImage("./Images/doomsun.png") : canvasLayer.loadImage("./Images/sun.png");
+  },
+  paint: function(ctx, width, height) {
+      if(this.doomsun){
+        if (this.doomsize < 20){
+          this.doomsize = width/2;
+        }
+        ctx.globalAlpha = 0.98;
+        let sunsize= this.doomsize;
+        let c = this.sun;
+        let x = (width/2) - (sunsize/2);
+        let y = -(sunsize/2);
+        ctx.drawImage(c, x, y, sunsize, sunsize);
+        this.doomsize = this.doomsize * this.doomsizeMultiplier;
+    } 
+    else  {
+      ctx.globalAlpha = 0.8;
+      let sunsize= width/4;
+      let c = this.sun;
+      let x = width - (sunsize/2) ;
+      let y = -(sunsize/2);
+      ctx.drawImage(c, x, y, sunsize, sunsize);
+    }
+    ctx.globalAlpha = 1;
+
+  },
+  setDayCycle: function(value) {
+    // hmmm...
+  }
+}
+
 const starTypes = ["✵", "✴", "✦", "✸"];
 const starsizes = ["5px Arial", "6px Arial"];
 const screensize = window.innerWidth;
