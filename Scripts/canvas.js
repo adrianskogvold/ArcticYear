@@ -112,7 +112,6 @@ var SkyLayer = {
     bottom: new Color(152, 192, 240)
   },
   nightColors: {
-    // (#011642, #0e58bc
     top: new Color(01, 22, 102),
     bottom: new Color(14, 124, 224)
   },
@@ -435,6 +434,17 @@ var NorthernLights = {
   }
 }
 
+var BlackOverlay = {
+  initialize: function() {},
+  alpha: 0,
+  paint: function(ctx, width, height) {
+    if(alpha<=0) return;
+    ctx.fillStyle="#000";
+    ctx.globalAlpha=this.alpha;
+    ctx.fillRect(0, 0, width, height);
+    ctx.globalAlpha=1;
+  }
+};
 
 var animTicks = 0;
 function animateProc() {
@@ -465,6 +475,7 @@ ready(() => {
     CanvasLayer.addLayer(WaterLayer);
     CanvasLayer.addLayer(CityLayer);
     CanvasLayer.addLayer(SnowLayer2);
+    CanvasLayer.addLayer(BlackOverlay);
 
     CanvasLayer.setDayCycle(1);
     CanvasLayer.initialize('main');
