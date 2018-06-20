@@ -292,9 +292,11 @@ const StarLayer = {
       };
       this.stars.push(star);
     }
+    this.alpha = 0;
   },
 
   paint: function(ctx, width, height) {
+    ctx.globalAlpha = this.alpha;
     for (i in this.stars) {
       if(this.previousWidth != 1 && this.previousWidth != width){
         this.stars = [];

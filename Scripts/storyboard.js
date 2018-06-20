@@ -52,7 +52,8 @@ var StoryBoard = {
         {
             cityFilter: 0.5,
             duration: 5000,
-            label: 'Winter'
+            label: 'Winter',
+            stars: 1
         },
         /*
         // performance tests
@@ -100,6 +101,7 @@ var StoryBoard = {
         // 6
         {
             clouds: 0,
+            stars: 0,
             snow: 0,
             northernLights: 1,            
             duration: 1000
@@ -178,6 +180,9 @@ var StoryBoard = {
         }
         if(this.nextState.hasOwnProperty('waterReflections')) {
             WaterLayer.alpha = SnowLayer.alpha = blend(this.currentState.waterReflections, this.nextState.waterReflections, f);
+        }
+        if(this.nextState.hasOwnProperty('stars')){
+            StarLayer.alpha = blend(this.currentState.stars, this.nextState.stars, f);
         }
         if(this.nextState.hasOwnProperty('label')) {
             document.getElementById("season-label").innerText = this.nextState.label;
