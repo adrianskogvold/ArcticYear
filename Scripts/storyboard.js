@@ -197,6 +197,10 @@ var StoryBoard = {
             }
             this.nextState = cloneObject(this.scenes[this.sceneIndex]);
             this.sceneStart = timestamp;
+
+            if(this.nextState.hasOwnProperty('label')) {
+                document.getElementById("season-label").innerText = this.nextState.label;
+            }
         }
     }
 }

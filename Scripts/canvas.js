@@ -268,32 +268,35 @@ var CityLayer = {
 };
 
 const SunLayer = {
-  doomsun: false,
   doomsizeMultiplier: 1.0005,
   doomsize: 1,
   initialize: function(canvasLayer) {
-    this.sun = this.doomsun ? canvasLayer.loadImage("./Images/doomsun.png") : canvasLayer.loadImage("./Images/sun.png");
+    this.doom = false;
+    this.doomx = 1;
+    this.sun = canvasLayer.loadImage("./Images/sun.png");
+    this.doomsun = canvasLayer.loadImage("./Images/doomsun.png");
   },
   paint: function(ctx, width, height) {
-      if(this.doomsun){
+    ctx.globalAlpha = 1;
+      if(this.doom){
         if (this.doomsize < 20){
-          this.doomsize = width/2;
+          this.doomsize = width/8;
+          this.doomx = width - (this.doomsize/2) ;
         }
         ctx.globalAlpha = this.alpha;
         let sunsize= this.doomsize;
-        let c = this.sun;
-        let x = (width/2) - (sunsize/2);
+        let x = this.doomx;
         let y = -(sunsize/2);
-        ctx.drawImage(c, x, y, sunsize, sunsize);
+        ctx.drawImage(this.doomsun, Math.max(this.doomx, ((width/2) - (this.doomsize/2))), y, sunsize, sunsize);
         this.doomsize = this.doomsize * this.doomsizeMultiplier;
+        this.doomx -= 0.01;
     } 
     else  {
       ctx.globalAlpha = this.alpha;
       let sunsize= width/4;
-      let c = this.sun;
       let x = width - (sunsize/2) ;
       let y = -(sunsize/2);
-      ctx.drawImage(c, x, y, sunsize, sunsize);
+      ctx.drawImage(this.sun, x, y, sunsize, sunsize);
     }
     ctx.globalAlpha = 1;
 
@@ -310,6 +313,8 @@ const pointSizes = [1,2];
 
 const StarLayer = {
   stars: [],
+  alpha: 1,
+  previousWidth: 1,
   width: window.innerWidth,
   initialize: function(canvasLayer) {
     let starCount = 100;
@@ -326,7 +331,7 @@ const StarLayer = {
   },
 
   paint: function(ctx, width, height) {
-    ctx.globalAlpha = this.alpha;
+    if(this.alpha <= 0 ) return;
     if( this.width != width){
       this.stars = [];
       this.width = width;
@@ -354,6 +359,7 @@ const StarLayer = {
       ctx.fill();
       ctx.closePath();
     }
+    ctx.globalAlpha = 1;
   },
   setDayCycle: function(value) {
     this.nightAlpha = value;
@@ -716,6 +722,10 @@ function animateProc() {
   window.requestAnimationFrame(animateProc);
 }
 
+function startDoom(){
+  SunLayer.doom = true;
+}
+
 function ready(fn) {
   if (
     document.attachEvent
@@ -745,6 +755,7 @@ CanvasLayer.setDayCycle(1);
     //document.getElementById("intro-container").style.display = "none";
 
     CanvasLayer.addLayer(SkyLayer, "Sky");
+    CanvasLayer.addLayer(SunLayer, "Black old sun");
     CanvasLayer.addLayer(StarLayer, "Stars");
     CanvasLayer.addLayer(NorthernLights, "Northern Lights");
     CanvasLayer.addLayer(MountainLayer, "Mountain");
