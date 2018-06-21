@@ -239,7 +239,7 @@ window.onkeypress = function(e) {
         currentString = "";
         StoryBoard.jumpToState(2);
     }
-    else if(currentString.includes("doom")){
+    else if(currentString.includes("apocalypse")){
         currentString = "";
         SunLayer.doom = true;
         StoryBoard.jumpToState(9);
