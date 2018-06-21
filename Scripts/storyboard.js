@@ -1,22 +1,19 @@
-
 function cloneObject(obj) {
-    if(Array.isArray(obj)) {
-        let result = [];
-        for(i in obj)
-            result.push(cloneObject(obj));
-        return result;
-    } 
-    if(typeof obj == "object") {
-        let result = {};
-        for(i in obj)
-            result[i] = cloneObject(obj[i]);
-        return result;
-    }
-    return obj;
+  if (Array.isArray(obj)) {
+    let result = [];
+    for (i in obj) result.push(cloneObject(obj));
+    return result;
+  }
+  if (typeof obj == "object") {
+    let result = {};
+    for (i in obj) result[i] = cloneObject(obj[i]);
+    return result;
+  }
+  return obj;
 }
 
 function blend(a, b, blendValue) {
-    return a + (b - a) * blendValue;
+  return a + (b - a) * blendValue;
 }
 
 var StoryBoard = {
@@ -169,11 +166,14 @@ var StoryBoard = {
         for(i in this.nextState)
                 this.currentState[i] = this.nextState[i]*/
     },
-    timerTick: function() {
-        if(!this.currentState) return;
+  timerTick: function() {
+    if (!this.currentState) return;
 
-        let timestamp = (new Date()).getTime();
-        let f = Math.min(1, (timestamp - this.sceneStart) / this.nextState.duration);
+    let timestamp = new Date().getTime();
+    let f = Math.min(
+      1,
+      (timestamp - this.sceneStart) / this.nextState.duration
+    );
 
         f = 3*f*f - 2*f*f*f;
 
@@ -209,23 +209,23 @@ var StoryBoard = {
             document.getElementById("season-label").innerText = this.nextState.label;
         }
 
-        if(f >= 1) {
-            for(i in this.nextState)
-                this.currentState[i] = this.nextState[i];
+    if (f >= 1) {
+      for (i in this.nextState) this.currentState[i] = this.nextState[i];
 
-            if(++this.sceneIndex >= this.scenes.length) {
-                this.sceneIndex = 2;
-            }
-            this.nextState = cloneObject(this.scenes[this.sceneIndex]);
-            this.sceneStart = timestamp;
+      if (++this.sceneIndex >= this.scenes.length) {
+        this.sceneIndex = 2;
+      }
+      this.nextState = cloneObject(this.scenes[this.sceneIndex]);
+      this.sceneStart = timestamp;
 
-            if(this.nextState.hasOwnProperty('label')) {
-                document.getElementById("season-label").innerText = this.nextState.label;
-            }
-        }
+      if (this.nextState.hasOwnProperty("label")) {
+        document.getElementById(
+          "season-label"
+        ).innerText = this.nextState.label;
+      }
     }
 }
-
+}
 
 var currentString = "";
 window.onkeypress = function(e) {
