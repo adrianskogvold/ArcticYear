@@ -44,7 +44,7 @@ var StoryBoard = {
         bottom: new Color(0, 15, 40)
       },
       stars: 1,
-      duration: 1000
+      duration: 10000
     },
     {
       stars: 1,
