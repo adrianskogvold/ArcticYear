@@ -29,6 +29,7 @@ var StoryBoard = {
             cityFilter: 0.5,
             clouds: 0,
             waterReflections: 1,
+            cloudAmount: 1,
             snow: 0,
             northernLights: 0,
             sun: 0,
@@ -47,6 +48,8 @@ var StoryBoard = {
         },
         {
             cityFilter: 0.5,
+            blackOverlay: 0.3,
+            cloudAmount:1,
             duration: 5000,
             label: 'Winter',
             stars: 1
@@ -123,6 +126,7 @@ var StoryBoard = {
         // 9 (sun)
         {
             sun: 1,
+            cloudAmount:0.5,
             duration: 1000
         },
         // 10 (clouds)
@@ -144,7 +148,7 @@ var StoryBoard = {
         this.currentState = cloneObject(this.scenes[0]);
         this.nextState = cloneObject(this.scenes[0]);
         this.sceneIndex = 0;
-        this.sceneStart = (new Date()).getTime();
+        this.sceneStart = performance.now();
         this.ff = false;
     },
     jumpToNextState: function(){
@@ -161,7 +165,7 @@ var StoryBoard = {
   timerTick: function() {
     if (!this.currentState) return;
 
-    let timestamp = new Date().getTime();
+    let timestamp = performance.now();
     let f = Math.min(
       1,
       (timestamp - this.sceneStart) / this.nextState.duration
@@ -175,6 +179,9 @@ var StoryBoard = {
         }
         if(this.nextState.hasOwnProperty('clouds')) {
             CloudLayer.cloudAlpha = blend(this.currentState.clouds, this.nextState.clouds, f);
+        }
+        if(this.nextState.hasOwnProperty('cloudAmount')) {
+            CloudLayer.cloudAmount = blend(this.currentState.cloudAmount, this.nextState.cloudAmount, f);
         }
         if(this.nextState.hasOwnProperty('blackOverlay')) {
             BlackOverlay.alpha = blend(this.currentState.blackOverlay, this.nextState.blackOverlay, f);
@@ -243,6 +250,8 @@ window.onkeypress = function(e) {
     else if(currentString.includes("apocalypse")){
         currentString = "";
         SunLayer.doom = true;
+        MountainLayer.quake = 1;
+        CityLayer.quake = 1; 
         StoryBoard.jumpToState(9);
     }
     else if(currentString.includes("skip")){
