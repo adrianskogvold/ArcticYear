@@ -219,6 +219,7 @@ var MountainLayer = {
       drawnWidth,
       drawnHeight
     );
+    ctx.filter = "none";
   }
 };
 
@@ -265,7 +266,7 @@ var CityLayer = {
       drawnWidth,
       drawnHeight
     );
-    ctx.globalAlpha = this.nightAlpha;
+    ctx.filter = "none";
     ctx.globalAlpha = 1;
   },
   setDayCycle: function(value) {
