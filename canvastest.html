@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title>CANVAS CITY</title>
+        <title>One Year in Tromsø</title>
         <meta charset="UTF-8" />
         <link rel = "stylesheet" type = "text/css" href = "Styles/canvas.css" />
         <link rel = "stylesheet" type = "text/css" href = "Styles/intro.css" />
@@ -22,7 +22,7 @@
             left: 0;
             z-index: 1;
         }
-        #main,  #main-texture {
+        #intro-texture, #main,  #main-texture {
             width: 97%;
             height: 97%;
             border-radius: 15px;
@@ -37,6 +37,11 @@
             overflow: hidden;
             opacity: 0.1;
             z-index: 2;
+        }
+        #intro-texture {
+            overflow: hidden;
+            opacity: 0.1;
+            z-index: 1;
         }
         #main-texture:after {
             content: '';
@@ -80,18 +85,22 @@
         <script src="./Scripts/storyboard.js" ></script>
     </head>
     <body>
-        <!--
-        <div id="intro-container">
-            <div id="intro">• One Year&hairsp;in Tromsø •</div>
         
-            <div id="intro-description">As migrants to this city, we pay homage to the changing seasons in this series of interactive postcards.
-                This experience is best viewed in Chrome due to the use of experimental web technologies.
+        <div id="intro-container">
+            <div id="intro-texture">
+                <img src="images/oldPaper.jpg"/>
+            </div>
+
+            <div id="intro">One Year in Tromsø</div>
+        
+            <div id="intro-description">As migrants to this city, we pay homage to the changing seasons in this dynamic postcard.<br/>
+                This experience is best viewed in Chrome or Edge due to the use of experimental web technologies.
             </div> 
 
             <div id="entry">
-                <button id="entry-button">enter</button>
+                <button id="entry-button">ENTER</button>
             </div>
-        </div> //-->
+        </div>
 
         <div id="main-container">
             <div id="season-label">
