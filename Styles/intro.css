@@ -30,6 +30,10 @@
     }
 }
 
+* {
+    font-family: "league";
+}
+
 body {
     background-color: #000;
 }
@@ -52,16 +56,15 @@ body {
     color: #FFF;
     font-size: 3em;
     font-family: "league";
-    animation: increase-weight 6s infinite ease-in-out;
+    animation: increase-weight 4s infinite ease-in-out;
     text-align: center;
-    font-variation-settings: 'wght' 400;
+    font-variation-settings: 'wght' 600;
     text-transform: uppercase;   
 
 }
 
 #intro-description {
     padding-top: 2em;
-    font-family: "league";
     color: #FFF;
     font-variation-settings: 'wght' 400;
     width: 400px;

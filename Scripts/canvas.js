@@ -106,7 +106,7 @@ var CanvasLayer = {
     if(animTicks % 10 === 0) {
       let r = "<h3>Render Times</h3><table>";
       for(i in rendertimes) {
-        r += "<tr><td>" + rendertimes[i].name + "</td><td>" + rendertimes[i].renderTime+ "ms </td></tr>";
+        r += "<tr><td>" + rendertimes[i].name + "</td><td class='debug-render-times'>" + rendertimes[i].renderTime+ "ms </td></tr>";
       }
       let ffs = this.lastRender ? (start - this.lastRender) : (t-start);
     
@@ -736,21 +736,28 @@ ready(() => {
       const texture = document.getElementById("main-texture");
       let mouseTimeout;
       texture.addEventListener("mousemove", (evt) => {
-        // Pause the animation?
         CityLayer.parallax(evt.x, evt.y);
 
-        console.log("Mouse is moving");
-        mouseTimeout && clearTimeout(mouseTimeout);
-        mouseTimeout = setTimeout(() => {
-          console.log("some seconds since the last mousemove")
-          // 
-        }, 2500);
+        // mouseTmeout && clearTimeout(mouseTimeout);
+        // mouseTimeout = setTimeout(() => {
+        //   console.log("some seconds since the last mousemove")
+        //   // 
+        // }, 2500);
       });
+    });
+
+    let debugPanelVisible = false; 
+
+    window.addEventListener("keypress", function(e) {
+      // Show/hide the debug panel when you press 'd'
+      if (e.keyCode === 100) {
+        const displayState = debugPanelVisible ? 'none' : 'block';
+        document.getElementById("debuginfo").style.display = displayState;
+        debugPanelVisible = !debugPanelVisible;
+      }
+      if((e.keyCode>=48)&&(e.keyCode<58)) {
+        CanvasLayer.layerVisible[e.keyCode - 48] = !CanvasLayer.layerVisible[e.keyCode - 48];
+      }
     });
 });
 
-window.addEventListener("keypress", function(e) {
-  if((e.keyCode>=48)&&(e.keyCode<58)) {
-    CanvasLayer.layerVisible[e.keyCode - 48] = !CanvasLayer.layerVisible[e.keyCode - 48];
-  }
-});
