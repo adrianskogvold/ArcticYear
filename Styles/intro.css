@@ -52,9 +52,9 @@ body {
     color: #FFF;
     font-size: 3em;
     font-family: "league";
-    animation: increase-weight 6s infinite ease-in-out;
+    animation: increase-weight 4s infinite ease-in-out;
     text-align: center;
-    font-variation-settings: 'wght' 400;
+    font-variation-settings: 'wght' 600;
     text-transform: uppercase;   
 
 }
