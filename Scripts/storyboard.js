@@ -146,60 +146,6 @@ var StoryBoard = {
         this.sceneIndex = 0;
         this.sceneStart = (new Date()).getTime();
     },
-    // 6
-    {
-      clouds: 0,
-      snow: 0,
-      blackOverlay: 0,
-      northernLights: 1,
-      duration: 10000
-    },
-    // 7
-    {
-      //northernLights: 1,
-      duration: 20000
-    },
-    // 8 (transform to summer)
-    {
-      cityFilter: 0,
-      waterReflections: 0,
-      skyColors: {
-        top: new Color(92, 130, 189),
-        bottom: new Color(152, 192, 240)
-      },
-      stars: 0,
-      northernLights: 0,
-      duration: 8000,
-      label: "Summer"
-    },
-    // 9 (sun)
-    {
-      sun: 1,
-      cloudAmount: 0.2,
-      duration: 1000
-    },
-    // 10 (clouds)
-    {
-      clouds: 1,
-      duration: 15000
-    },
-    // 11 (rain)
-    {
-      sun: 0,
-      duration: 15000
-    },
-    // 12 (clouds)
-    {
-      clouds: 0,
-      duration: 10000
-    }
-  ],
-  initialize: function() {
-    this.currentState = cloneObject(this.scenes[0]);
-    this.nextState = cloneObject(this.scenes[0]);
-    this.sceneIndex = 0;
-    this.sceneStart = new Date().getTime();
-  },
   timerTick: function() {
     if (!this.currentState) return;
 
