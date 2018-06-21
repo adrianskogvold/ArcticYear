@@ -1,5 +1,4 @@
 
-
 function cloneObject(obj) {
     if(Array.isArray(obj)) {
         let result = [];
@@ -150,6 +149,17 @@ var StoryBoard = {
         this.sceneIndex = 0;
         this.sceneStart = (new Date()).getTime();
     },
+    jumpToNextState: function(){
+        this.sceneStart = 1;
+    },
+    jumpToState: function(index){
+        let timestamp = (new Date()).getTime();
+        this.sceneStart = timestamp;
+        this.sceneIndex = index;
+        this.nextState = cloneObject(this.scenes[this.sceneIndex]);
+        for(i in this.nextState)
+                this.currentState[i] = this.nextState[i]
+    },
     timerTick: function() {
         if(!this.currentState) return;
 
@@ -204,3 +214,28 @@ var StoryBoard = {
         }
     }
 }
+
+
+var currentString = "";
+window.onkeypress = function(e) {
+    currentString = currentString + e.key;
+    if(currentString.length > 20){
+        currentString = currentString.substring(1);
+    }
+
+    if(currentString.includes("summer")){
+        console.log("jumping to summer");
+        StoryBoard.jumpToState(8);
+        currentString = "";     
+    }
+    else if(currentString.includes("winter")){
+        console.log("jumping to winter");
+        currentString = "";
+        StoryBoard.jumpToState(1);
+    }
+    else if(currentString.includes("skip")){
+        currentString = "";
+        StoryBoard.jumpToNextState();
+    }
+
+};
