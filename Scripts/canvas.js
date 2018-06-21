@@ -704,6 +704,7 @@ ready(() => {
   initializeLayers();
     const entryButton = document.getElementById("entry-button");
     entryButton.addEventListener("click", () => {
+      document.getElementById("audio-element").play();
       document.getElementById("intro-container").style.display = "none";
 
       //CanvasLayer.setDayCycle(1);
