@@ -151,20 +151,12 @@ var StoryBoard = {
         this.sceneStart = 1;
     },
     jumpToState: function(index){
-
         var zoomer = setInterval( function(){
-            console.log(StoryBoard.sceneIndex, index);
             if(StoryBoard.sceneIndex == index){
                 clearInterval(zoomer);
             }
                 StoryBoard.jumpToNextState();
         }, 200);
-        /*let timestamp = (new Date()).getTime();
-        this.sceneStart = timestamp;
-        this.sceneIndex = index;
-        this.nextState = cloneObject(this.scenes[this.sceneIndex]);
-        for(i in this.nextState)
-                this.currentState[i] = this.nextState[i]*/
     },
   timerTick: function() {
     if (!this.currentState) return;
