@@ -106,7 +106,7 @@ var CanvasLayer = {
     if(animTicks % 10 === 0) {
       let r = "<h3>Render Times</h3><table>";
       for(i in rendertimes) {
-        r += "<tr><td>" + rendertimes[i].name + "</td><td>" + rendertimes[i].renderTime+ "ms </td></tr>";
+        r += "<tr><td>" + rendertimes[i].name + "</td><td class='debug-render-times'>" + rendertimes[i].renderTime+ "ms </td></tr>";
       }
       let ffs = this.lastRender ? (start - this.lastRender) : (t-start);
     
