@@ -17,31 +17,16 @@
     }
 }
 
-@keyframes appear { 
-    0% {
-        font-variation-settings: 'BLDA' 1000, 'WMX2' 0;
-    }
-    50% { 
-        font-variation-settings: 'BLDA' 0, 'WMX2' 250;
-    }
-    100% {
-        font-variation-settings: 'BLDA' 0, 'WMX2' 500;
-    }
-}
 
 @keyframes increase-weight {
     0% {
-        opacity: 0;
-        font-variation-settings: 'wght' 0, 'XXXX' 0;
+        text-shadow: 2px 2px 2px rgba(0, 255, 0, 0.45);
     }
     50% {
-        opacity: 1;
-        font-variation-settings: 'wght' 0, 'XXXX' 0;
-        text-shadow: none;
+        text-shadow: 3px 3px 3px rgba(0, 255, 0, 0.6);
     }
     100% {
-        font-variation-settings: 'wght' 70, 'XXXX' 100;
-        text-shadow: 2px 2px 2px #ff0000;
+        text-shadow: 2px 2px 2px rgba(0, 255, 0, 0.45);
     }
 }
 
@@ -65,40 +50,46 @@ body {
 
 #intro {
     color: #FFF;
-    font-size: 4em;
-    font-family: "jabin";
-    animation: increase-weight 8s ease-in-out;
+    font-size: 3em;
+    font-family: "league";
+    animation: increase-weight 6s infinite ease-in-out;
     text-align: center;
-    font-variation-settings: 'wght' 70, 'XXXX' 100;
-    text-shadow: 2px 2px 2px #ff0000;
+    font-variation-settings: 'wght' 400;
+    text-transform: uppercase;   
+
 }
 
 #intro-description {
-    padding-top: 40px;
+    padding-top: 2em;
     font-family: "league";
     color: #FFF;
-    font-variation-settings: 'wght' 100;
+    font-variation-settings: 'wght' 400;
     width: 400px;
     color: #EEE;
     font-size: 0.8em;
     text-align: center;
-    animation: fade-in 8s ease-in;
+    animation: fade-in 2s ease-in;
+    z-index: 1;
+}
+
+#entry {
+    z-index: 1;
 }
 
 #entry button {
     background: none;
-    font-family: "jabin";
-    font-size: 30px;
-    font-variation-settings: 'wght' 20, 'XXXX' 0;
+    font-family: "league";
+    font-size: 20px;
+    font-variation-settings: 'wght' 400;
     color: #FFF;
-    border: 1px solid #ff0000;
+    border: 1px solid rgba(0, 255, 0, 0.45);
     border-radius: 5px;
     padding: 10px;
     margin-top: 40px;
     cursor: pointer;
     transition: all 200ms ease-in-out;
     outline: 0;
-    animation: fade-in 8s ease-in;
+    animation: fade-in 2s ease-in;
 }
 
 #entry button:hover {
