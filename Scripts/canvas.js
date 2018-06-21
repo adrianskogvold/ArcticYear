@@ -30,6 +30,7 @@ var WaterMark = 0.76;
 // this object keeps track of all layers and handles drawing & canvas setup
 var CanvasLayer = {
   layers: [],
+  layerVisible: [],
   images: [],
   imagesLoaded: 0,
   // returns an Image() object with an image
@@ -93,10 +94,14 @@ var CanvasLayer = {
     let start = t;
     let rendertimes = [];
     for (let i = 0; i < this.layers.length; i++) {      
-      this.layers[i].paint(ctx, width, height);
+      if(this.layerVisible[i]) {
+        this.layers[i].paint(ctx, width, height);
       let t2 = (new Date()).getTime();
-      rendertimes.push({name: this.layers[i]._name || "Layer "+i, renderTime: t2 - t});
+      rendertimes.push({name: i+". " + this.layers[i]._name || "Layer "+i, renderTime: t2 - t});
       t = t2;
+      } else {
+        rendertimes.push({name: i+". " + this.layers[i]._name || "Layer "+i, renderTime: "<i>--</i> "});
+      }
     }
     if(animTicks % 10 === 0) {
       let r = "<h3>Render Times</h3><table>";
@@ -120,6 +125,7 @@ var CanvasLayer = {
     if(name)
     layer["_name"] = name;
     this.layers.push(layer);
+    this.layerVisible.push(true);
     layer.initialize(this);
   },
   // signals the day cycle (0 = day, 1 = night) to all layers
@@ -220,13 +226,15 @@ var CityLayer = {
     this.floya = canvasLayer.loadImage("./Images/Floya.png");
     this.nordFjellet = canvasLayer.loadImage("./Images/NordFjellet.png");
     this.t = 0;
+    this.t2 = 0;
     this.width = window.innerWidth;
   },
   parallax: function(x, y) {
     // Should probably have a more accurate width here;
-    this.t = -1 * x/this.width *1;
+    this.t2 = -1 * x/this.width *1;
   },
   paint: function(ctx, width, height) {
+    this.t += (this.t2 - this.t) * 0.05;
     this.width = width;
     let h = width * this.city.ratio;
     ctx.filter =  `sepia(100%) hue-rotate(${this.hueRotate * 360}deg) brightness(100%) saturate(100%)`; 
@@ -236,21 +244,21 @@ var CityLayer = {
     const drawnHeight = h * 1.05;
     ctx.drawImage(
       this.nordFjellet,
-      this.t * (25 - deltaWidth),
+      this.t * (width*25/1200 - deltaWidth),
       yPosition,
       drawnWidth,
       drawnHeight
     );
     ctx.drawImage(
       this.floya,
-      this.t * (35 - deltaWidth),
+      this.t * (width*35/1200 - deltaWidth),
       yPosition,
       drawnWidth,
       drawnHeight
     );
     ctx.drawImage(
       this.city,
-      this.t * (40 - deltaWidth),
+      this.t * (width*40/1200 - deltaWidth),
       yPosition,
       drawnWidth,
       drawnHeight
@@ -333,6 +341,7 @@ const StarLayer = {
       this.width = width;
       this.initialize();
     }
+    ctx.globalAlpha = this.alpha;
     for (i in this.stars) {
       ctx.fillStyle = pointColors[(i) % pointColors.length];
       //ctx.font = starsizes[Math.floor(Math.random() * starsizes.length)];
@@ -527,7 +536,7 @@ var WaterLayer = {
     // Start at 0?
     let steps = 150;
     //ctx.drawImage(this.waterCanvas, 0, 0);
-    ctx.globalAlpha = this.alpha;
+    ctx.globalAlpha = 1;//this.alpha;
     for (let i = 0; i < steps; i++) {
       let h = (height * (1 - WaterMark)) / steps;
       ctx.drawImage(
@@ -772,4 +781,10 @@ ready(() => {
         }, 2500);
       });
     });
-  });
+});
+
+window.addEventListener("keypress", function(e) {
+  if((e.keyCode>=48)&&(e.keyCode<58)) {
+    CanvasLayer.layerVisible[e.keyCode - 48] = !CanvasLayer.layerVisible[e.keyCode - 48];
+  }
+});
