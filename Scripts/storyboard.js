@@ -148,17 +148,26 @@ var StoryBoard = {
         this.nextState = cloneObject(this.scenes[0]);
         this.sceneIndex = 0;
         this.sceneStart = (new Date()).getTime();
+        this.ff = false;
     },
     jumpToNextState: function(){
         this.sceneStart = 1;
     },
     jumpToState: function(index){
-        let timestamp = (new Date()).getTime();
+
+        var zoomer = setInterval( function(){
+            console.log(StoryBoard.sceneIndex, index);
+            if(StoryBoard.sceneIndex == index){
+                clearInterval(zoomer);
+            }
+                StoryBoard.jumpToNextState();
+        }, 200);
+        /*let timestamp = (new Date()).getTime();
         this.sceneStart = timestamp;
         this.sceneIndex = index;
         this.nextState = cloneObject(this.scenes[this.sceneIndex]);
         for(i in this.nextState)
-                this.currentState[i] = this.nextState[i]
+                this.currentState[i] = this.nextState[i]*/
     },
     timerTick: function() {
         if(!this.currentState) return;
@@ -220,20 +229,28 @@ var StoryBoard = {
 
 var currentString = "";
 window.onkeypress = function(e) {
-    currentString = currentString + e.key;
+    if(e.key == "Enter"){
+        let entrybutton = document.getElementById("entry-button").click();
+    }
+    else {
+        currentString = currentString + e.key;
+    }
     if(currentString.length > 20){
         currentString = currentString.substring(1);
     }
 
     if(currentString.includes("summer")){
-        console.log("jumping to summer");
-        StoryBoard.jumpToState(8);
+        StoryBoard.jumpToState(9);
         currentString = "";     
     }
     else if(currentString.includes("winter")){
-        console.log("jumping to winter");
         currentString = "";
-        StoryBoard.jumpToState(1);
+        StoryBoard.jumpToState(2);
+    }
+    else if(currentString.includes("doom")){
+        currentString = "";
+        SunLayer.doom = true;
+        StoryBoard.jumpToState(9);
     }
     else if(currentString.includes("skip")){
         currentString = "";
