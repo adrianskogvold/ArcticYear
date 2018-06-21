@@ -17,10 +17,10 @@ Yea we dont know what we are doing either
 - [x] Introduce layers for wintertime
 - [x] Better position the city lights/reflection, also slow them down (stop them?)
 - [ ] Fix audio so that it starts when you enter the scene
-- [ ] Remove seasonal text or only display when you have entered the seasons for a short while
+- [x] Remove seasonal text or only display when you have entered the seasons for a short while
 - [ ] Change city saturation in the summertime
 - [ ] Clouds, make them darker during the wintertime
-- [ ] Add in parallax effect to the city
+- [x] Add in parallax effect to the city
 - [ ] Add in a filter to Tromsdalstinden to match the other mountains. Maybe should decrease saturation. 
 
 ### Now out of scope
