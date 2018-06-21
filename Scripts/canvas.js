@@ -53,7 +53,7 @@ var CanvasLayer = {
     result.style.display = "none";
     img.src = url;
     result.img = img;
-    result.lastFilter = filter;
+    result.filter = "no";
     result.applyFilter = function(filter) {
       if(filter == result.lastFilter) return;
       result.lastFilter = filter;
@@ -167,8 +167,8 @@ var CloudLayer = {
   cloudAlpha: 1,
   cloudAmount: 1,
   initialize: function(canvasLayer) {
-    this.cloud1 = canvasLayer.loadImageFiltered("./Images/cloud1.png");
-    this.cloud2 = canvasLayer.loadImageFiltered("./Images/cloud2.png");
+    this.cloud1 = canvasLayer.loadImage("./Images/cloud1.png");
+    this.cloud2 = canvasLayer.loadImage("./Images/cloud2.png");
     for (let i = 0; i < 36; i++) {
       this.clouds.push({
         x: Math.random(),
@@ -204,6 +204,7 @@ var MountainLayer = {
   initialize: function(canvasLayer) {
     this.tromsdalstin = canvasLayer.loadImage("./Images/Tromsdalstin.png");
     this.hueRotate = 0.5;
+    this.quake = 0;
   },
   paint: function(ctx, width, height) {
     ctx.globalAlpha = 1;
@@ -211,7 +212,7 @@ var MountainLayer = {
     ctx.filter =  `sepia(100%) hue-rotate(${this.hueRotate * 360}deg) brightness(100%) saturate(70%)`; 
     // const t = Math.sin(animTicks/100); // For parallaxing
     const t = 0;
-    const yPosition = height * WaterMark * 1.03 - h;
+    const yPosition = height * WaterMark * (1.03 + this.quake * (0.02 + 0.01*Math.sin(animTicks/3))) - h;
     const drawnWidth = width * 1.02;
     const deltaWidth = (drawnWidth - width) / 2;
     const drawnHeight = h * 1.05;
@@ -234,10 +235,11 @@ var CityLayer = {
     this.t = 0;
     this.t2 = 0;
     this.width = window.innerWidth;
+    this.quake = 0;
   },
   parallax: function(x, y) {
     // Should probably have a more accurate width here;
-    this.t2 = -1 * x/this.width *1;
+    this.t2 =  x/this.width;
   },
   paint: function(ctx, width, height) {
     this.t += (this.t2 - this.t) * 0.05;
@@ -251,21 +253,21 @@ var CityLayer = {
     ctx.drawImage(
       this.nordFjellet,
       this.t * (width*25/1200 - deltaWidth),
-      yPosition,
+      yPosition + height * (0.015 + 0.015 * Math.sin(animTicks/3 + 1))*this.quake,
       drawnWidth,
       drawnHeight
     );
     ctx.drawImage(
       this.floya,
       this.t * (width*35/1200 - deltaWidth),
-      yPosition,
+      yPosition+ height * (0.012 + 0.012 * Math.sin(animTicks/3 + 1.5))*this.quake,
       drawnWidth,
       drawnHeight
     );
     ctx.drawImage(
       this.city,
       this.t * (width*40/1200 - deltaWidth),
-      yPosition,
+      yPosition + height * (0.01 + 0.01 * Math.sin(animTicks/3 + 2))*this.quake,
       drawnWidth,
       drawnHeight
     );
