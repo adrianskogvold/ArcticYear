@@ -256,5 +256,13 @@ window.onkeypress = function(e) {
         currentString = "";
         StoryBoard.jumpToNextState();
     }
+    else if(currentString.includes("loopall")){
+        currentString = "";
+        StoryBoard.jumpToState(0);
+    }
+    else if(currentString.includes("reload")){
+        currentString = "";
+        window.location.reload();
+    }
 
 };
