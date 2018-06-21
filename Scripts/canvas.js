@@ -106,7 +106,7 @@ var CanvasLayer = {
     if(animTicks % 10 === 0) {
       let r = "<h3>Render Times</h3><table>";
       for(i in rendertimes) {
-        r += "<tr><td>" + rendertimes[i].name + "</td><td>" + rendertimes[i].renderTime+ "ms </td></tr>";
+        r += "<tr><td>" + rendertimes[i].name + "</td><td class='debug-render-times'>" + rendertimes[i].renderTime+ "ms </td></tr>";
       }
       let ffs = this.lastRender ? (start - this.lastRender) : (t-start);
     
@@ -480,7 +480,7 @@ var WaterLayer = {
     this.city = canvasLayer.loadImage("./Images/tromsocolor.png");
     this.alpha = 1;
   },
-  fakeReflection: function(ctx, x, y, width, color) {
+  fakeReflection: function(ctx, x, y, width) {
     let reflectionLength = 200;
     ctx.beginPath();
     //ctx.arc(x, Math.max(0, y) + width / 2, width / 2, 0, Math.PI * 2);
@@ -503,7 +503,7 @@ var WaterLayer = {
       -height * 3
     );
     ctx.scale(1, -1 / 0.75);
-    ctx.globalAlpha = this.lightAlpha;
+    ctx.globalAlpha = 1;//this.lightAlpha;
     
     var grad = ctx.createLinearGradient(0, 0, 0, 200);
     color = "rgba(255,255,192,";
@@ -513,10 +513,10 @@ var WaterLayer = {
     //grad.addColorStop(0.75, "rgba(255, 255, 255, 0.05)");
     ctx.fillStyle = grad;
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 25; i++) {
       this.fakeReflection(
         ctx,
-        (i * width * 2) / 50 + 50 * Math.sin(i / 2 + animTicks / 500),
+        ((animTicks/6000 + Math.sin(i/11.4))*2*width)%(2*width) ,
         0,
         5,
         "rgb(255, 255, 255)"
@@ -602,6 +602,7 @@ var NorthernLights = {
     //First Northern Light
     let translations = [{x:-20, y:-10}, {x:40, y:50}, {x:-20,y:-40}];
     let colors = ["rgba(255, 255, 0, 0.15", "rgba(0, 255, 0, 0.15), rgba(0, 255, 0, 0.6)"];
+    
     for(let j = 0; j < translations.length; j++) {
     ctx.translate(translations[j].x, translations[j].y);
     ctx.strokeStyle = colors[j];
@@ -621,8 +622,8 @@ var NorthernLights = {
     );
     //ctx.closePath();
     ctx.stroke();
-  }
-  },
+    } 
+},
   paintFx: function(ctx, width, height) {
     ctx.clearRect(0, 0, width, height);
     ctx.globalAlpha = 0.5;
@@ -638,6 +639,7 @@ var NorthernLights = {
     }
   },
   paint: function(ctx, width, height) {
+    this.alpha = 1;
     if(this.alpha <=0 ) return;
     if (this.canvas.width != width * 0.5) {
       this.canvas.width = width * 0.5;
@@ -704,23 +706,26 @@ function ready(fn) {
   }
 }
 
+function initializeLayers() {
+  CanvasLayer.addLayer(SkyLayer, "Sky");
+  CanvasLayer.addLayer(SunLayer, "Black old sun");
+  CanvasLayer.addLayer(StarLayer, "Stars");
+  CanvasLayer.addLayer(NorthernLights, "Northern Lights");
+  CanvasLayer.addLayer(MountainLayer, "Mountain");
+  CanvasLayer.addLayer(CloudLayer, "Clouds");
+  //CanvasLayer.addLayer(SnowLayer, "Snow");
+  CanvasLayer.addLayer(WaterLayer, "Water");
+  CanvasLayer.addLayer(CityLayer, "City");
+  CanvasLayer.addLayer(CopyLayer, "Copy Layer");
+  //CanvasLayer.addLayer(SnowLayer2, "Snow 2");
+  CanvasLayer.addLayer(BlackOverlay, "Black Overlay");
+}
+
 ready(() => {
+  initializeLayers();
     const entryButton = document.getElementById("entry-button");
     entryButton.addEventListener("click", () => {
       document.getElementById("intro-container").style.display = "none";
-
-      CanvasLayer.addLayer(SkyLayer, "Sky");
-      CanvasLayer.addLayer(SunLayer, "Black old sun");
-      CanvasLayer.addLayer(StarLayer, "Stars");
-      CanvasLayer.addLayer(NorthernLights, "Northern Lights");
-      CanvasLayer.addLayer(MountainLayer, "Mountain");
-      CanvasLayer.addLayer(CloudLayer, "Clouds");
-      //CanvasLayer.addLayer(SnowLayer, "Snow");
-      CanvasLayer.addLayer(WaterLayer, "Water");
-      CanvasLayer.addLayer(CityLayer, "City");
-      CanvasLayer.addLayer(CopyLayer, "Copy Layer");
-      //CanvasLayer.addLayer(SnowLayer2, "Snow 2");
-      CanvasLayer.addLayer(BlackOverlay, "Black Overlay");
 
       //CanvasLayer.setDayCycle(1);
       StoryBoard.initialize();
@@ -731,21 +736,28 @@ ready(() => {
       const texture = document.getElementById("main-texture");
       let mouseTimeout;
       texture.addEventListener("mousemove", (evt) => {
-        // Pause the animation?
         CityLayer.parallax(evt.x, evt.y);
 
-        console.log("Mouse is moving");
-        mouseTimeout && clearTimeout(mouseTimeout);
-        mouseTimeout = setTimeout(() => {
-          console.log("some seconds since the last mousemove")
-          // 
-        }, 2500);
+        // mouseTmeout && clearTimeout(mouseTimeout);
+        // mouseTimeout = setTimeout(() => {
+        //   console.log("some seconds since the last mousemove")
+        //   // 
+        // }, 2500);
       });
+    });
+
+    let debugPanelVisible = false; 
+
+    window.addEventListener("keypress", function(e) {
+      // Show/hide the debug panel when you press 'd'
+      if (e.keyCode === 100) {
+        const displayState = debugPanelVisible ? 'none' : 'block';
+        document.getElementById("debuginfo").style.display = displayState;
+        debugPanelVisible = !debugPanelVisible;
+      }
+      if((e.keyCode>=48)&&(e.keyCode<58)) {
+        CanvasLayer.layerVisible[e.keyCode - 48] = !CanvasLayer.layerVisible[e.keyCode - 48];
+      }
     });
 });
 
-window.addEventListener("keypress", function(e) {
-  if((e.keyCode>=48)&&(e.keyCode<58)) {
-    CanvasLayer.layerVisible[e.keyCode - 48] = !CanvasLayer.layerVisible[e.keyCode - 48];
-  }
-});
