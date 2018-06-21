@@ -46,7 +46,7 @@ var StoryBoard = {
                 bottom: new Color(0, 15, 40)
             },
             stars: 1,
-            duration: 1000
+            duration: 10000
         },
         {
             cityFilter: 0.5,
@@ -87,7 +87,7 @@ var StoryBoard = {
         // 4
         {
             clouds: 1,
-            duration: 15000
+            duration: 25000
         },
         // 5
         {
@@ -165,6 +165,8 @@ var StoryBoard = {
 
         let timestamp = (new Date()).getTime();
         let f = Math.min(1, (timestamp - this.sceneStart) / this.nextState.duration);
+
+        f = 3*f*f - 2*f*f*f;
 
         if(this.nextState.hasOwnProperty('skyColors')) {
             SkyLayer.topColor = this.currentState.skyColors.top.blend(this.nextState.skyColors.top, f);
