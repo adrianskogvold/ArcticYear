@@ -770,7 +770,7 @@ ready(() => {
         const markers = [
           {id: "ishavs", desc: "ARCTIC CATHEDRAL / ISHAVSKATEDRALEN\nConstruction completed in 1965\n\nBuilt mainly of aluminium-coated concrete panels, and designed by Norwegian architect Jan Inge Hovig, this church is the most famous landmark in Tromsø."}, 
           {id: "tromsdalstindn", desc: "TROMSDALSTINDEN / SÁLAŠOAIVI\n1,238 metres\n\nTromsdalstinden is a popular hiking destination. The Sámi name is comprised of the fact it is a good hunting area and has no jagged peaks."},
-          {id: "floya", desc: "STORSTEINEN\n421 metres\n\nA four minute trip on the aerial tramway will take you to the summit. A popular place to get a good view of Tromsø."}, 
+          {id: "floya", desc: "STORSTEINEN\n421 metres\n\nA four minute trip on the aerial tramway or a walk up the stone staircase will take you to the summit. A popular place to get a good view of Tromsø."}, 
           {id: "nordfjelle", desc: "NORDFJELLET\n626 metres\n\nIf you have an interesting factoid about this peak, please share."}
         ];
         const markerDescription = document.getElementById("marker-description");
