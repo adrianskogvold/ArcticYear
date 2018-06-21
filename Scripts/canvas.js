@@ -53,7 +53,10 @@ var CanvasLayer = {
     result.style.display = "none";
     img.src = url;
     result.img = img;
+    result.lastFilter = filter;
     result.applyFilter = function(filter) {
+      if(filter == result.lastFilter) return;
+      result.lastFilter = filter;
       this.width = this.img.width;
       this.height = this.img.height;
       let ctx = this.getContext("2d");

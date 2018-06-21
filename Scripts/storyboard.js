@@ -47,6 +47,8 @@ var StoryBoard = {
         },
         {
             cityFilter: 0.5,
+            blackOverlay: 0.3,
+            cloudAmount:1,
             duration: 5000,
             label: 'Winter',
             stars: 1
@@ -123,6 +125,7 @@ var StoryBoard = {
         // 9 (sun)
         {
             sun: 1,
+            cloudAmount:0.5,
             duration: 1000
         },
         // 10 (clouds)
