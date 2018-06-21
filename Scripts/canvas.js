@@ -2,6 +2,18 @@ const SUMMER = 0;
 const WINTER = 1;
 const SNOW_SCALE = 0.2; // Size of snowflake adjuster
 
+var needsRedraw = true;
+var ishavskatedraln;
+var tromsdalsntindn;
+var floya;
+var nordjelle;
+function initHoverTargets() {
+    ishavskatedraln = document.getElementById("ishavs");
+    tromsdalsntindn = document.getElementById("tromsdalstindn");
+    floya = document.getElementById("floya");
+    nordjelle = document.getElementById("nordfjelle");
+}
+
 /* holds rgb(a) values which can be converted into a style-compatible string.
    additionally it allows blending with another color (returns a new Color instance) */
 function Color(r, g, b, a) {
@@ -95,7 +107,9 @@ var CanvasLayer = {
     let rendertimes = [];
     for (let i = 0; i < this.layers.length; i++) {      
       if(this.layerVisible[i]) {
+        ctx.save();
         this.layers[i].paint(ctx, width, height);
+        ctx.restore();
       let t2 = (new Date()).getTime();
       rendertimes.push({name: i+". " + this.layers[i]._name || "Layer "+i, renderTime: t2 - t});
       t = t2;
@@ -219,6 +233,10 @@ var MountainLayer = {
       drawnWidth,
       drawnHeight
     );
+    if(needsRedraw){
+      setHoverElement(tromsdalstindn,t * 15 - deltaWidth + (drawnWidth*0.35) , yPosition + (drawnHeight * 0.25), drawnHeight * 0.40, drawnWidth*0.3 );
+      needsRedraw = false;
+    }
     ctx.filter = "none";
   }
 };
@@ -266,6 +284,12 @@ var CityLayer = {
       drawnWidth,
       drawnHeight
     );
+    if(needsRedraw){
+      setHoverElement(ishavskatedraln,this.t * (width*40/1200 - deltaWidth), yPosition + (drawnHeight * 0.70), drawnHeight * 0.20, drawnWidth*0.1);
+      setHoverElement(floya,this.t * (width*35/1200- deltaWidth) + (drawnWidth*0.65), yPosition + (drawnHeight * 0.03), drawnHeight * 0.60, drawnWidth*0.35 );
+      setHoverElement(nordjelle,this.t * (width*25/1200 - deltaWidth), yPosition + (drawnHeight * 0.40), drawnHeight * 0.30, drawnWidth*0.34 );
+      needsRedraw = false;
+    }
     ctx.filter = "none";
     ctx.globalAlpha = 1;
   },
@@ -686,6 +710,13 @@ function ready(fn) {
   }
 }
 
+function setHoverElement(element, x, y, height, width) {
+  element.style.top = y + (window.innerHeight*0.015) + "px";
+  element.style.left = x + (window.innerWidth*0.015) + "px";
+  element.style.width = width + "px";
+  element.style.height = height+ "px";
+}
+
 function initializeLayers() {
   CanvasLayer.addLayer(SkyLayer, "Sky");
   CanvasLayer.addLayer(SunLayer, "Black old sun");
@@ -699,10 +730,12 @@ function initializeLayers() {
   CanvasLayer.addLayer(CopyLayer, "Copy Layer");
   //CanvasLayer.addLayer(SnowLayer2, "Snow 2");
   CanvasLayer.addLayer(BlackOverlay, "Black Overlay");
+
 }
 
 ready(() => {
   initializeLayers();
+  initHoverTargets();
     const entryButton = document.getElementById("entry-button");
     entryButton.addEventListener("click", () => {
       document.getElementById("audio-element").play();
@@ -742,3 +775,6 @@ ready(() => {
     });
 });
 
+ window.addEventListener("resize", function() {
+  needsRedraw = true;
+});
