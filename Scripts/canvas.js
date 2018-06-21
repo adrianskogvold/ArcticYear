@@ -200,11 +200,12 @@ var CloudLayer = {
 var MountainLayer = {
   initialize: function(canvasLayer) {
     this.tromsdalstin = canvasLayer.loadImage("./Images/Tromsdalstin.png");
+    this.hueRotate = 0.5;
   },
   paint: function(ctx, width, height) {
     ctx.globalAlpha = 1;
     let h = width * this.tromsdalstin.ratio;
-    ctx.filter =  `sepia(100%) hue-rotate(${this.hueRotate * 360}deg) brightness(100%) saturate(100%)`; 
+    ctx.filter =  `sepia(100%) hue-rotate(${this.hueRotate * 360}deg) brightness(100%) saturate(70%)`; 
     // const t = Math.sin(animTicks/100); // For parallaxing
     const t = 0;
     const yPosition = height * WaterMark * 1.03 - h;
@@ -558,27 +559,6 @@ var WaterLayer = {
   }
 };
 
-// const PaperTexture = {
-//   initialize: function(canvasLayer) {
-//     this.oldPaper = canvasLayer.loadImageFiltered("./Images/oldPaper.jpg", "grayscale(100%), invert(100%)");
-//   },
-//   paint: function(ctx, width, height) {
-//     ctx.globalAlpha = 015;
-//     // ctx.globalCompositeOperation = "color-burn";
-//     ctx.drawImage(this.oldPaper, 0, 0);
-//     ctx.globalAlpha = 1;
-
-//     debugger;
-//     var grd=ctx.createRadialGradient(width/2,height/2,1,height,width,width/2);
-//     grd.addColorStop(0, "rgba(255, 255, 255, 0.5)");
-//     grd.addColorStop(1, "rgba(0, 0, 0, 0.5)");
-
-//     // Fill with gradient
-//     ctx.fillStyle=grd;
-//     ctx.fillRect(0,0,width,height);
-//   }
-// }
-
 var NorthernLights = {
   initialize: function(canvasLayer) {
     this.canvas = document.createElement("canvas");
@@ -639,7 +619,6 @@ var NorthernLights = {
     }
   },
   paint: function(ctx, width, height) {
-    this.alpha = 1;
     if(this.alpha <=0 ) return;
     if (this.canvas.width != width * 0.5) {
       this.canvas.width = width * 0.5;

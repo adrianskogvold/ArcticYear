@@ -190,6 +190,7 @@ var StoryBoard = {
         }
         if(this.nextState.hasOwnProperty('cityFilter')){
             CityLayer.hueRotate = blend(this.currentState.cityFilter, this.nextState.cityFilter, f);
+            MountainLayer.hueRotate =  blend(this.currentState.cityFilter, this.nextState.cityFilter, f);
         }
         if(this.nextState.hasOwnProperty('waterReflections')) {
             WaterLayer.alpha = SnowLayer.alpha = blend(this.currentState.waterReflections, this.nextState.waterReflections, f);
