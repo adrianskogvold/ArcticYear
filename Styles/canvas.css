@@ -2,3 +2,21 @@
     font-family: "jabin";
     src: url("../fonts/Jabin-Typeface.ttf");
 }
+
+#ishavs, #tromsdalstindn, #floya, #nordfjelle {
+    position:absolute;
+    z-index: 200;
+}
+/*
+#tromsdalstindn {
+    border: 1px solid red;
+}
+#ishavs {
+    border: 1px solid yellow;
+}
+#nordfjelle {
+    border: 1px solid green;
+}
+#floya {
+    border: 1px solid blue;
+}*/
