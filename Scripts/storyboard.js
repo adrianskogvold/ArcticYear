@@ -210,7 +210,7 @@ var StoryBoard = {
             document.getElementById("season-label").innerText = this.nextState.label;
         }
 
-    if (f >= 1) {
+    if (f >= 1 && !(SunLayer.doom && this.sceneIndex == 10)) {
       for (i in this.nextState) this.currentState[i] = this.nextState[i];
 
       if (++this.sceneIndex >= this.scenes.length) {
