@@ -744,20 +744,9 @@ function ready(fn) {
 }
 
 ready(() => {
-      /*
-    CanvasLayer.addLayer(SkyLayer);
-    CanvasLayer.addLayer(StarLayer);
-    CanvasLayer.addLayer(NorthernLights);
-    CanvasLayer.addLayer(CloudLayer);
-    CanvasLayer.addLayer(SnowLayer);
-    CanvasLayer.addLayer(WaterLayer);
-    CanvasLayer.addLayer(CityLayer);
-    CanvasLayer.addLayer(SnowLayer2);
-    CanvasLayer.setDayCycle(1);
-    CanvasLayer.initialize('main');*/
     const entryButton = document.getElementById("entry-button");
-    {//entryButton.addEventListener("click", () => {
-      //document.getElementById("intro-container").style.display = "none";
+    entryButton.addEventListener("click", () => {
+      document.getElementById("intro-container").style.display = "none";
 
       CanvasLayer.addLayer(SkyLayer, "Sky");
       CanvasLayer.addLayer(SunLayer, "Black old sun");
@@ -780,11 +769,10 @@ ready(() => {
       // Control parallax effect for the city
       const texture = document.getElementById("main-texture");
       let mouseTimeout;
-  
       texture.addEventListener("mousemove", (evt) => {
         // Pause the animation?
         CityLayer.parallax(evt.x, evt.y);
-  
+
         console.log("Mouse is moving");
         mouseTimeout && clearTimeout(mouseTimeout);
         mouseTimeout = setTimeout(() => {
@@ -792,8 +780,7 @@ ready(() => {
           // 
         }, 2500);
       });
-    }//);
-
+    });
 });
 
 window.addEventListener("keypress", function(e) {
