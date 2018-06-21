@@ -7,6 +7,8 @@ var ishavskatedraln;
 var tromsdalsntindn;
 var floya;
 var nordjelle;
+let debugPanelVisible = false; 
+
 function initHoverTargets() {
     ishavskatedraln = document.getElementById("ishavs");
     tromsdalsntindn = document.getElementById("tromsdalstindn");
@@ -120,7 +122,7 @@ var CanvasLayer = {
         rendertimes.push({name: i+". " + this.layers[i]._name || "Layer "+i, renderTime: "<i>--</i> "});
       }
     }
-    if(animTicks % 10 === 0) {
+    if(animTicks % 10 === 0 && debugPanelVisible) {
       let r = "<h3>Render Times</h3><table>";
       for(i in rendertimes) {
         r += "<tr><td>" + rendertimes[i].name + "</td><td class='debug-render-times'>" + rendertimes[i].renderTime+ "ms </td></tr>";
@@ -788,8 +790,6 @@ ready(() => {
         });
       }, 5000);
     });
-
-    let debugPanelVisible = false; 
 
     window.addEventListener("keypress", function(e) {
       // Show/hide the debug panel when you press 'd'
