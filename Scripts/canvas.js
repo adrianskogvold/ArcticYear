@@ -227,9 +227,9 @@ var MountainLayer = {
     // const t = Math.sin(animTicks/100); // For parallaxing
     const t = 0;
     const yPosition = height * WaterMark * (1.03 + this.quake * (0.02 + 0.01*Math.sin(animTicks/3))) - h;
-    const drawnWidth = width * 1.02;
+    const drawnWidth = width * 1.1;
     const deltaWidth = (drawnWidth - width) / 2;
-    const drawnHeight = h * 1.05;
+    const drawnHeight = h * 1.1;
     ctx.drawImage(
       this.tromsdalstin,
       t * 15 - deltaWidth,
