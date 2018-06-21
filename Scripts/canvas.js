@@ -639,7 +639,6 @@ var NorthernLights = {
     }
   },
   paint: function(ctx, width, height) {
-    this.alpha = 1;
     if(this.alpha <=0 ) return;
     if (this.canvas.width != width * 0.5) {
       this.canvas.width = width * 0.5;
