@@ -219,47 +219,43 @@ var CityLayer = {
     this.city = canvasLayer.loadImage("./Images/CityWithRoadCutout.png");
     this.floya = canvasLayer.loadImage("./Images/Floya.png");
     this.nordFjellet = canvasLayer.loadImage("./Images/NordFjellet.png");
+    this.t = 0;
+    this.width = window.innerWidth;
+  },
+  parallax: function(x, y) {
+    // Should probably have a more accurate width here;
+    this.t = -1 * x/this.width *1;
   },
   paint: function(ctx, width, height) {
+    this.width = width;
     let h = width * this.city.ratio;
     ctx.filter =  `sepia(100%) hue-rotate(${this.hueRotate * 360}deg) brightness(100%) saturate(100%)`; 
-    // const t = Math.sin(animTicks/100); // For parallaxing
-    const t = 0;
     const yPosition = height * WaterMark * 1.03 - h;
     const drawnWidth = width * 1.02;
     const deltaWidth = (drawnWidth - width) / 2;
     const drawnHeight = h * 1.05;
-    /*
-    ctx.drawImage(
-      this.tromsdalstin,
-      t * 15 - deltaWidth,
-      yPosition,
-      drawnWidth,
-      drawnHeight
-    );*/
     ctx.drawImage(
       this.nordFjellet,
-      t * 20 - deltaWidth,
+      this.t * (25 - deltaWidth),
       yPosition,
       drawnWidth,
       drawnHeight
     );
     ctx.drawImage(
       this.floya,
-      t * 25 - deltaWidth,
+      this.t * (35 - deltaWidth),
       yPosition,
       drawnWidth,
       drawnHeight
     );
     ctx.drawImage(
       this.city,
-      t * 35 - deltaWidth,
+      this.t * (40 - deltaWidth),
       yPosition,
       drawnWidth,
       drawnHeight
     );
     ctx.globalAlpha = this.nightAlpha;
-    // ctx.drawImage(this.nightCity, 0, height - h, width, h);
     ctx.globalAlpha = 1;
   },
   setDayCycle: function(value) {
@@ -739,36 +735,54 @@ function ready(fn) {
 }
 
 ready(() => {
-  /*
-CanvasLayer.addLayer(SkyLayer);
-CanvasLayer.addLayer(StarLayer);
-CanvasLayer.addLayer(NorthernLights);
-CanvasLayer.addLayer(CloudLayer);
-CanvasLayer.addLayer(SnowLayer);
-CanvasLayer.addLayer(WaterLayer);
-CanvasLayer.addLayer(CityLayer);
-CanvasLayer.addLayer(SnowLayer2);
-CanvasLayer.setDayCycle(1);
+      /*
+    CanvasLayer.addLayer(SkyLayer);
+    CanvasLayer.addLayer(StarLayer);
+    CanvasLayer.addLayer(NorthernLights);
+    CanvasLayer.addLayer(CloudLayer);
+    CanvasLayer.addLayer(SnowLayer);
+    CanvasLayer.addLayer(WaterLayer);
+    CanvasLayer.addLayer(CityLayer);
+    CanvasLayer.addLayer(SnowLayer2);
+    CanvasLayer.setDayCycle(1);
     CanvasLayer.initialize('main');*/
-  const el = document.getElementById("entry-button");
-  {//el.addEventListener("click", () => {
-    //document.getElementById("intro-container").style.display = "none";
+    const entryButton = document.getElementById("entry-button");
+    {//entryButton.addEventListener("click", () => {
+      //document.getElementById("intro-container").style.display = "none";
 
-    CanvasLayer.addLayer(SkyLayer, "Sky");
-    CanvasLayer.addLayer(SunLayer, "Black old sun");
-    CanvasLayer.addLayer(StarLayer, "Stars");
-    CanvasLayer.addLayer(NorthernLights, "Northern Lights");
-    CanvasLayer.addLayer(MountainLayer, "Mountain");
-    CanvasLayer.addLayer(CloudLayer, "Clouds");
-    //CanvasLayer.addLayer(SnowLayer, "Snow");
-    CanvasLayer.addLayer(WaterLayer, "Water");
-    CanvasLayer.addLayer(CityLayer, "City");
-    CanvasLayer.addLayer(CopyLayer, "Copy Layer");
-    //CanvasLayer.addLayer(SnowLayer2, "Snow 2");
-    CanvasLayer.addLayer(BlackOverlay, "Black Overlay");
+      CanvasLayer.addLayer(SkyLayer, "Sky");
+      CanvasLayer.addLayer(SunLayer, "Black old sun");
+      CanvasLayer.addLayer(StarLayer, "Stars");
+      CanvasLayer.addLayer(NorthernLights, "Northern Lights");
+      CanvasLayer.addLayer(MountainLayer, "Mountain");
+      CanvasLayer.addLayer(CloudLayer, "Clouds");
+      //CanvasLayer.addLayer(SnowLayer, "Snow");
+      CanvasLayer.addLayer(WaterLayer, "Water");
+      CanvasLayer.addLayer(CityLayer, "City");
+      CanvasLayer.addLayer(CopyLayer, "Copy Layer");
+      //CanvasLayer.addLayer(SnowLayer2, "Snow 2");
+      CanvasLayer.addLayer(BlackOverlay, "Black Overlay");
 
-    //CanvasLayer.setDayCycle(1);
-    StoryBoard.initialize();
-    CanvasLayer.initialize("main");
-  }//);
+      //CanvasLayer.setDayCycle(1);
+      StoryBoard.initialize();
+      CanvasLayer.initialize("main");
+
+
+      // Control parallax effect for the city
+      const texture = document.getElementById("main-texture");
+      let mouseTimeout;
+  
+      texture.addEventListener("mousemove", (evt) => {
+        // Pause the animation?
+        CityLayer.parallax(evt.x, evt.y);
+  
+        console.log("Mouse is moving");
+        mouseTimeout && clearTimeout(mouseTimeout);
+        mouseTimeout = setTimeout(() => {
+          console.log("some seconds since the last mousemove")
+          // 
+        }, 2500);
+      });
+    }//);
+
 });
