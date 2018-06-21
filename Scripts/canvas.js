@@ -257,7 +257,7 @@ var CityLayer = {
   },
   parallax: function(x, y) {
     // Should probably have a more accurate width here;
-    this.t2 =  x/this.width;
+    this.t2 =  -(1-x/this.width);
   },
   paint: function(ctx, width, height) {
     this.t += (this.t2 - this.t) * 0.05;
@@ -315,15 +315,16 @@ const SunLayer = {
   paint: function(ctx, width, height) {
     ctx.globalAlpha = 1;
       if(this.doom){
+        let doombounce = (1 + 0.24 * Math.sin(animTicks/3));
         if (this.doomsize < 20){
           this.doomsize = width/8;
           this.doomx = width - (this.doomsize/2) ;
         }
         ctx.globalAlpha = this.alpha;
-        let sunsize= this.doomsize;
+        let sunsize= this.doomsize * doombounce;
         let x = this.doomx;
         let y = -(sunsize/2);
-        ctx.drawImage(this.doomsun, Math.max(this.doomx, ((width/2) - (this.doomsize/2))), y, sunsize, sunsize);
+        ctx.drawImage(this.doomsun,Max.max((width/2)-(this.doomsize/2)),x - sunsize/2, y , sunsize, sunsize);
         this.doomsize = this.doomsize * this.doomsizeMultiplier;
         this.doomx -= 0.1 + ((this.doomsize * this.doomsizeMultiplier) - this.doomsize);
     } 

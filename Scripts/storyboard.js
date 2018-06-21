@@ -141,7 +141,8 @@ var StoryBoard = {
         },
         // 12 (clouds)
         {
-            duration: 1000
+            clouds: 0,
+            duration: 7000
         },        
     ],
     initialize: function() {
@@ -250,8 +251,8 @@ window.onkeypress = function(e) {
     else if(currentString.includes("apocalypse")){
         currentString = "";
         SunLayer.doom = true;
-        MountainLayer.quake = 1;
-        CityLayer.quake = 1; 
+        MountainLayer.quake += 1;
+        CityLayer.quake += 1; 
         StoryBoard.jumpToState(9);
     }
     else if(currentString.includes("skip")){
