@@ -12,20 +12,20 @@ Yea we dont know what we are doing either
 - [x] Northern lights
 - [x] Add in seasonal text
 - [x] Can we make clouds use the web animation API?
-- [ ] Make mountains interactive, so you can hover over them
+- [x] Make mountains interactive, so you can hover over them
 - [x] Make the mountains responsive
 - [x] Introduce layers for wintertime
 - [x] Better position the city lights/reflection, also slow them down (stop them?)
-- [ ] Fix audio so that it starts when you enter the scene
+- [x] Fix audio so that it starts when you enter the scene
 - [x] Remove seasonal text or only display when you have entered the seasons for a short while
 - [ ] Change city saturation in the summertime
-- [ ] Clouds, make them darker during the wintertime
 - [x] Add in parallax effect to the city
-- [ ] Add in a filter to Tromsdalstinden to match the other mountains. Maybe should decrease saturation. 
+- [x] Add in a filter to Tromsdalstinden to match the other mountains. Maybe should decrease saturation. 
 
 ### Now out of scope
 - [ ] Add in sounds for winter (maybe binaural?)
 - [ ] Add in season shifter control
+- [ ] Clouds, make them darker during the wintertime
 
 ## Idea Log
 - What if we made it informative about Tromso? So, this is Tromsdalstinden, this is how high it is, here is how much the record snowfall it got? Then we could use red outlines to indicate the area.
