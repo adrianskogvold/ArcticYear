@@ -235,7 +235,6 @@ var MountainLayer = {
     );
     if(needsRedraw){
       setHoverElement(tromsdalstindn,t * 15 - deltaWidth + (drawnWidth*0.35) , yPosition + (drawnHeight * 0.25), drawnHeight * 0.40, drawnWidth*0.3 );
-      needsRedraw = false;
     }
     ctx.filter = "none";
   }
@@ -711,10 +710,10 @@ function ready(fn) {
 }
 
 function setHoverElement(element, x, y, height, width) {
-  element.style.top = y + (window.innerHeight*0.015) + "px";
-  element.style.left = x + (window.innerWidth*0.015) + "px";
-  element.style.width = width + "px";
-  element.style.height = height+ "px";
+  element.style.top = y + height/2 + (window.innerHeight*0.015) + "px";
+  element.style.left = x + width/2 + (window.innerWidth*0.015) + "px";
+  // element.style.width = width + "px";
+  // element.style.height = height+ "px";
 }
 
 function initializeLayers() {
@@ -748,16 +747,41 @@ ready(() => {
 
       // Control parallax effect for the city
       const texture = document.getElementById("main-texture");
+      const marker = document.getElementById("markers"); 
       let mouseTimeout;
-      texture.addEventListener("mousemove", (evt) => {
-        CityLayer.parallax(evt.x, evt.y);
+      window.setTimeout(() => {
+        let isHovered = false;
+        window.addEventListener("mousemove", (evt) => {
+          CityLayer.parallax(evt.x, evt.y);
+          marker.classList.add("visible");
+          mouseTimeout && clearTimeout(mouseTimeout);
+          if (!isHovered) {
+            mouseTimeout = setTimeout(() => {
+              marker.classList.remove("visible");
+            }, 1000);
+          }
+        });
 
-        // mouseTmeout && clearTimeout(mouseTimeout);
-        // mouseTimeout = setTimeout(() => {
-        //   console.log("some seconds since the last mousemove")
-        //   // 
-        // }, 2500);
-      });
+        const markers = [
+          {id: "ishavs", desc: "ARCTIC CATHEDRAL / ISHAVSKATEDRALEN\nConstruction completed in 1965\n\nBuilt mainly of aluminium-coated concrete panels, and designed by Norwegian architect Jan Inge Hovig, this church is the most famous landmark in Tromsø."}, 
+          {id: "tromsdalstindn", desc: "TROMSDALSTINDEN / SÁLAŠOAIVI\n1,238 metres\n\nTromsdalstinden is a popular hiking destination. The Sámi name is comprised of the fact it is a good hunting area and has no jagged peaks."},
+          {id: "floya", desc: "STORSTEINEN\n421 metres\n\nA four minute trip on the aerial tramway will take you to the summit. A popular place to get a good view of Tromsø."}, 
+          {id: "nordfjelle", desc: "NORDFJELLET\n626 metres\n\nIf you have an interesting factoid about this peak, please share."}
+        ];
+        const markerDescription = document.getElementById("marker-description");
+        markers.map(markerItem => {
+          const markerElement = document.getElementById(markerItem.id);
+          markerElement.addEventListener("mouseenter", () => {
+            markerDescription.innerText = markerItem.desc;
+            markerDescription.style.display = 'block';
+            isHovered = true;
+          });
+          markerElement.addEventListener("mouseleave", () => {
+            markerDescription.style.display = 'none';
+            isHovered = false;
+          });
+        });
+      }, 5000);
     });
 
     let debugPanelVisible = false; 
