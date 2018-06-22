@@ -80,7 +80,7 @@ body {
 }
 
 #entry button {
-    background: none;
+    background-color: rgb(255, 255, 255, 0);
     font-family: "league";
     font-size: 20px;
     font-variation-settings: 'wght' 400;
@@ -92,10 +92,11 @@ body {
     cursor: pointer;
     transition: all 200ms ease-in-out;
     outline: 0;
-    animation: fade-in 2s ease-in;
+    animation: fade-in 1s ease-in;
 }
 
 #entry button:hover {
+    background-color: rgb(255, 255, 255, 0.1);
     border: 1px solid #FFF;
 }
 

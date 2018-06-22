@@ -7,6 +7,8 @@ var ishavskatedraln;
 var tromsdalsntindn;
 var floya;
 var nordjelle;
+let debugPanelVisible = false; 
+
 function initHoverTargets() {
     ishavskatedraln = document.getElementById("ishavs");
     tromsdalsntindn = document.getElementById("tromsdalstindn");
@@ -120,7 +122,7 @@ var CanvasLayer = {
         rendertimes.push({name: i+". " + this.layers[i]._name || "Layer "+i, renderTime: "<i>--</i> "});
       }
     }
-    if(animTicks % 10 === 0) {
+    if(animTicks % 10 === 0 && debugPanelVisible) {
       let r = "<h3>Render Times</h3><table>";
       for(i in rendertimes) {
         r += "<tr><td>" + rendertimes[i].name + "</td><td class='debug-render-times'>" + rendertimes[i].renderTime+ "ms </td></tr>";
@@ -227,9 +229,9 @@ var MountainLayer = {
     // const t = Math.sin(animTicks/100); // For parallaxing
     const t = 0;
     const yPosition = height * WaterMark * (1.03 + this.quake * (0.02 + 0.01*Math.sin(animTicks/3))) - h;
-    const drawnWidth = width * 1.02;
+    const drawnWidth = width * 1.1;
     const deltaWidth = (drawnWidth - width) / 2;
-    const drawnHeight = h * 1.05;
+    const drawnHeight = h * 1.1;
     ctx.drawImage(
       this.tromsdalstin,
       t * 15 - deltaWidth,
@@ -239,7 +241,6 @@ var MountainLayer = {
     );
     if(needsRedraw){
       setHoverElement(tromsdalstindn,t * 15 - deltaWidth + (drawnWidth*0.35) , yPosition + (drawnHeight * 0.25), drawnHeight * 0.40, drawnWidth*0.3 );
-      needsRedraw = false;
     }
     ctx.filter = "none";
   }
@@ -265,34 +266,34 @@ var CityLayer = {
     let h = width * this.city.ratio;
     ctx.filter =  `sepia(100%) hue-rotate(${this.hueRotate * 360}deg) brightness(100%) saturate(100%)`; 
     const yPosition = height * WaterMark * 1.03 - h;
-    const drawnWidth = width * 1.02;
+    const drawnWidth = width * 1.03;
     const deltaWidth = (drawnWidth - width) / 2;
-    const drawnHeight = h * 1.05;
+    const drawnHeight = h * 1.03;
     ctx.drawImage(
       this.nordFjellet,
-      this.t * (width*25/1200 - deltaWidth),
+      (this.t * width*25/1200) - deltaWidth,
       yPosition + height * (0.015 + 0.015 * Math.sin(animTicks/3 + 1))*this.quake,
       drawnWidth,
       drawnHeight
     );
     ctx.drawImage(
       this.floya,
-      this.t * (width*35/1200 - deltaWidth),
+      (this.t * width*35/1200) - deltaWidth,
       yPosition+ height * (0.012 + 0.012 * Math.sin(animTicks/3 + 1.5))*this.quake,
       drawnWidth,
       drawnHeight
     );
     ctx.drawImage(
       this.city,
-      this.t * (width*40/1200 - deltaWidth),
+      (this.t * width*40/1200)- deltaWidth,
       yPosition + height * (0.01 + 0.01 * Math.sin(animTicks/3 + 2))*this.quake,
       drawnWidth,
       drawnHeight
     );
     if(needsRedraw){
-      setHoverElement(ishavskatedraln,this.t * (width*40/1200 - deltaWidth), yPosition + (drawnHeight * 0.70), drawnHeight * 0.20, drawnWidth*0.1);
-      setHoverElement(floya,this.t * (width*35/1200- deltaWidth) + (drawnWidth*0.65), yPosition + (drawnHeight * 0.03), drawnHeight * 0.60, drawnWidth*0.35 );
-      setHoverElement(nordjelle,this.t * (width*25/1200 - deltaWidth), yPosition + (drawnHeight * 0.40), drawnHeight * 0.30, drawnWidth*0.34 );
+      setHoverElement(ishavskatedraln,(this.t * width*40/1200)- deltaWidth, yPosition + (drawnHeight * 0.70), drawnHeight * 0.20, drawnWidth*0.1);
+      setHoverElement(floya,(this.t * width*35/1200) - deltaWidth + (drawnWidth*0.65), yPosition + (drawnHeight * 0.03), drawnHeight * 0.60, drawnWidth*0.35 );
+      setHoverElement(nordjelle,(this.t * width*25/1200) - deltaWidth, yPosition + (drawnHeight * 0.40), drawnHeight * 0.30, drawnWidth*0.34 );
       needsRedraw = false;
     }
     ctx.filter = "none";
@@ -717,10 +718,10 @@ function ready(fn) {
 }
 
 function setHoverElement(element, x, y, height, width) {
-  element.style.top = y + (window.innerHeight*0.015) + "px";
-  element.style.left = x + (window.innerWidth*0.015) + "px";
-  element.style.width = width + "px";
-  element.style.height = height+ "px";
+  element.style.top = y + height/2 + (window.innerHeight*0.015) + "px";
+  element.style.left = x + width/2 + (window.innerWidth*0.015) + "px";
+  // element.style.width = width + "px";
+  // element.style.height = height+ "px";
 }
 
 function initializeLayers() {
@@ -754,19 +755,42 @@ ready(() => {
 
       // Control parallax effect for the city
       const texture = document.getElementById("main-texture");
+      const marker = document.getElementById("markers"); 
       let mouseTimeout;
-      texture.addEventListener("mousemove", (evt) => {
-        CityLayer.parallax(evt.x, evt.y);
+      window.setTimeout(() => {
+        let isHovered = false;
+        window.addEventListener("mousemove", (evt) => {
+          CityLayer.parallax(evt.x, evt.y);
+          marker.classList.add("visible");
+          mouseTimeout && clearTimeout(mouseTimeout);
+          if (!isHovered) {
+            mouseTimeout = setTimeout(() => {
+              marker.classList.remove("visible");
+            }, 1000);
+          }
+        });
 
-        // mouseTmeout && clearTimeout(mouseTimeout);
-        // mouseTimeout = setTimeout(() => {
-        //   console.log("some seconds since the last mousemove")
-        //   // 
-        // }, 2500);
-      });
+        const markers = [
+          {id: "ishavs", desc: "ARCTIC CATHEDRAL / ISHAVSKATEDRALEN\nConstruction completed in 1965\n\nBuilt mainly of aluminium-coated concrete panels, and designed by Norwegian architect Jan Inge Hovig, this church is the most famous landmark in Tromsø."}, 
+          {id: "tromsdalstindn", desc: "TROMSDALSTINDEN / SÁLAŠOAIVI\n1,238 metres\n\nTromsdalstinden is a popular hiking destination. The Sámi name is comprised of the fact it is a good hunting area and has no jagged peaks."},
+          {id: "floya", desc: "STORSTEINEN\n421 metres\n\nA four minute trip on the aerial tramway or a walk up the stone staircase will take you to the summit. A popular place to get a good view of Tromsø."}, 
+          {id: "nordfjelle", desc: "NORDFJELLET\n626 metres\n\nIf you have an interesting factoid about this peak, please share."}
+        ];
+        const markerDescription = document.getElementById("marker-description");
+        markers.map(markerItem => {
+          const markerElement = document.getElementById(markerItem.id);
+          markerElement.addEventListener("mouseenter", () => {
+            markerDescription.innerText = markerItem.desc;
+            markerDescription.style.display = 'block';
+            isHovered = true;
+          });
+          markerElement.addEventListener("mouseleave", () => {
+            markerDescription.style.display = 'none';
+            isHovered = false;
+          });
+        });
+      }, 5000);
     });
-
-    let debugPanelVisible = false; 
 
     window.addEventListener("keypress", function(e) {
       // Show/hide the debug panel when you press 'd'
