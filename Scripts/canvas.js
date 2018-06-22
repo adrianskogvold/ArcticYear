@@ -324,9 +324,9 @@ const SunLayer = {
         let sunsize= this.doomsize * doombounce;
         let x = this.doomx;
         let y = -(sunsize/2);
-        ctx.drawImage(this.doomsun,Max.max((width/2)-(this.doomsize/2)),x - sunsize/2, y , sunsize, sunsize);
+        ctx.drawImage(this.doomsun,Math.max((width/2)-(this.doomsize*doombounce/2),x - sunsize/2), y , sunsize, sunsize);
         this.doomsize = this.doomsize * this.doomsizeMultiplier;
-        this.doomx -= 0.1 + ((this.doomsize * this.doomsizeMultiplier) - this.doomsize);
+        this.doomx -= 0.21 + ((this.doomsize * this.doomsizeMultiplier) - this.doomsize);
     } 
     else  {
       ctx.globalAlpha = this.alpha;
