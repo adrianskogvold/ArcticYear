@@ -266,34 +266,34 @@ var CityLayer = {
     let h = width * this.city.ratio;
     ctx.filter =  `sepia(100%) hue-rotate(${this.hueRotate * 360}deg) brightness(100%) saturate(100%)`; 
     const yPosition = height * WaterMark * 1.03 - h;
-    const drawnWidth = width * 1.02;
+    const drawnWidth = width * 1.03;
     const deltaWidth = (drawnWidth - width) / 2;
-    const drawnHeight = h * 1.05;
+    const drawnHeight = h * 1.03;
     ctx.drawImage(
       this.nordFjellet,
-      this.t * (width*25/1200 - deltaWidth),
+      (this.t * width*25/1200) - deltaWidth,
       yPosition + height * (0.015 + 0.015 * Math.sin(animTicks/3 + 1))*this.quake,
       drawnWidth,
       drawnHeight
     );
     ctx.drawImage(
       this.floya,
-      this.t * (width*35/1200 - deltaWidth),
+      (this.t * width*35/1200) - deltaWidth,
       yPosition+ height * (0.012 + 0.012 * Math.sin(animTicks/3 + 1.5))*this.quake,
       drawnWidth,
       drawnHeight
     );
     ctx.drawImage(
       this.city,
-      this.t * (width*40/1200 - deltaWidth),
+      (this.t * width*40/1200)- deltaWidth,
       yPosition + height * (0.01 + 0.01 * Math.sin(animTicks/3 + 2))*this.quake,
       drawnWidth,
       drawnHeight
     );
     if(needsRedraw){
-      setHoverElement(ishavskatedraln,this.t * (width*40/1200 - deltaWidth), yPosition + (drawnHeight * 0.70), drawnHeight * 0.20, drawnWidth*0.1);
-      setHoverElement(floya,this.t * (width*35/1200- deltaWidth) + (drawnWidth*0.65), yPosition + (drawnHeight * 0.03), drawnHeight * 0.60, drawnWidth*0.35 );
-      setHoverElement(nordjelle,this.t * (width*25/1200 - deltaWidth), yPosition + (drawnHeight * 0.40), drawnHeight * 0.30, drawnWidth*0.34 );
+      setHoverElement(ishavskatedraln,(this.t * width*40/1200)- deltaWidth, yPosition + (drawnHeight * 0.70), drawnHeight * 0.20, drawnWidth*0.1);
+      setHoverElement(floya,(this.t * width*35/1200) - deltaWidth + (drawnWidth*0.65), yPosition + (drawnHeight * 0.03), drawnHeight * 0.60, drawnWidth*0.35 );
+      setHoverElement(nordjelle,(this.t * width*25/1200) - deltaWidth, yPosition + (drawnHeight * 0.40), drawnHeight * 0.30, drawnWidth*0.34 );
       needsRedraw = false;
     }
     ctx.filter = "none";
